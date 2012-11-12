@@ -3379,7 +3379,7 @@ public class Admin extends WindowAdapter
         {
             if (args.length != 1)
             {
-                System.err.println("usage: java ... fi.hoski.remote.Replicator <properties file>");
+                System.err.println("usage: java ... fi.hoski.remote.Admin <properties file>");
                 System.exit(-1);
             }
             final Properties properties = new Properties();
