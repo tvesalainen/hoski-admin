@@ -104,7 +104,7 @@ public class Version
     </target>
     <target name="-pre-jar" description="Creates bat file">
     <echo file="dist/HoskiAdmin.bat">
-javaw -Xmx512m -cp .:lib/* -jar HoskiAdmin.jar HoskiAdmin.properties    
+java -Xmx512m -cp .:lib/* -jar HoskiAdmin.jar HoskiAdmin.properties    
     </echo>
     </target>
     <target name="-post-jar">
