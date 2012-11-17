@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
+import javax.swing.JOptionPane;
 
 /**
  * @author Timo Vesalainen

@@ -63,6 +63,11 @@ import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.jnlp.BasicService;
+import javax.jnlp.FileContents;
+import javax.jnlp.PersistenceService;
+import javax.jnlp.ServiceManager;
+import javax.jnlp.UnavailableServiceException;
 import javax.mail.internet.AddressException;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -121,7 +126,6 @@ public class Admin extends WindowAdapter
         this.serverProperties = serverProperties;
         server = serverProperties.getServer();
         creator = serverProperties.getUsername();
-        this.privileged = serverProperties.get(ServerProperties.TABLES) != null;
         UIManager.getDefaults().addResourceBundle("fi.hoski.remote.ui.ui");
         creators = new EventEditor[EventType.values().length];
         int index = 0;
@@ -134,6 +138,14 @@ public class Admin extends WindowAdapter
         {
             String smsLeftString = TextUtil.getString("SMS LEFT");
             JOptionPane.showMessageDialog(frame, smsLeftString + " " + credits);
+        }
+        try
+        {
+            new SqlConnection(serverProperties.getProperties());
+            privileged = true;
+        }
+        catch (ClassNotFoundException | SQLException ex)
+        {
         }
         initFrame();
     }
@@ -3377,20 +3389,68 @@ public class Admin extends WindowAdapter
     {
         try
         {
-            if (args.length != 1)
+            PersistenceService persistenceService = null;
+            URL propertiesUrl = null;
+            Properties properties = new Properties();
+            try
             {
-                System.err.println("usage: java ... fi.hoski.remote.Admin <properties file>");
-                System.exit(-1);
+                BasicService basicService = (BasicService) ServiceManager.lookup("javax.jnlp.BasicService");
+                URL codeBase = basicService.getCodeBase();
+                persistenceService = (PersistenceService) ServiceManager.lookup("javax.jnlp.PersistenceService");
+                propertiesUrl = codeBase.toURI().resolve("hoski-admin.properties").toURL();
+                try
+                {
+                    FileContents propertiesContents = persistenceService.get(propertiesUrl);
+                    try (InputStream is = propertiesContents.getInputStream())
+                    {
+                        properties.load(is);
+                    }
+                }
+                catch (FileNotFoundException ex)
+                {
+                    try (InputStream is = propertiesUrl.openStream())
+                    {
+                        properties.load(is);
+                    }
+                }
             }
-            final Properties properties = new Properties();
-            try (FileInputStream pFile = new FileInputStream(args[0]);)
+            catch (UnavailableServiceException ex)
             {
-                properties.load(pFile);
+                URL url = new URL("https://hsk-members.appspot.com/HoskiAdmin/hoski-admin.properties");
+                try (InputStream pFile = url.openStream())
+                {
+                    properties.load(pFile);
+                }
             }
+            boolean savePassword = Boolean.valueOf(properties.getProperty("savepassword"));
+            properties.remove("savepassword");
             ServerProperties sp = new ServerProperties(properties);
+            sp.setSavePassword(savePassword);
             DataObjectDialog<ServerProperties> dod = new DataObjectDialog<ServerProperties>(null, sp.getModel().hide(ServerProperties.TABLES), sp);
-            if (sp.allSet() || dod.edit())
+            if (dod.edit())
             {
+                if (persistenceService != null)
+                {
+                    FileContents propertiesContents = null;
+                    try
+                    {
+                        propertiesContents = persistenceService.get(propertiesUrl);
+                    }
+                    catch (FileNotFoundException ex)
+                    {
+                        persistenceService.create(propertiesUrl, 2048);
+                        propertiesContents = persistenceService.get(propertiesUrl);
+                    }
+                    try (OutputStream os = propertiesContents.getOutputStream(true))
+                    {
+                        properties = sp.getProperties();
+                        if (!sp.isSavePassword())
+                        {
+                            properties.remove("serverpassword");
+                        }
+                        properties.store(os, "");
+                    }
+                }
                 RemoteAppEngine.init(sp.getServer(), sp.getUsername(), sp.getPassword());
                 DataStoreProxy dsp = new DataStoreProxy(properties);
                 dsp.start();

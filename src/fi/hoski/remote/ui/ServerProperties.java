@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.Key;
 import fi.hoski.datastore.repository.DataObject;
 import fi.hoski.datastore.repository.DataObjectModel;
 import fi.hoski.datastore.repository.MapData;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 /**
@@ -33,6 +34,7 @@ public class ServerProperties extends DataObject
     public static final String SERVER = "remoteserver";
     public static final String USERNAME = "remoteuser";
     public static final String PASSWORD = "remotepassword";
+    public static final String SAVEPASSWORD = "savepassword";
     public static final String TABLES = "tables";
     
     public static final DataObjectModel MODEL = new DataObjectModel(KIND);
@@ -43,29 +45,25 @@ public class ServerProperties extends DataObject
         MODEL.property(USERNAME);
         MODEL.property(PASSWORD);
         MODEL.setPassword(PASSWORD);
+        MODEL.property(SAVEPASSWORD, Boolean.class, false, false, false);
         MODEL.property(TABLES);
     }
-    
-    private Properties properties;
     
     public ServerProperties(Properties properties)
     {
         super(new MapData(MODEL, properties));
-        this.properties = properties;
     }
 
     public Properties getProperties()
     {
+        Properties properties = new Properties();
+        for (Entry<String,Object> entry : getAll().entrySet())
+        {
+            properties.setProperty(entry.getKey(), entry.getValue().toString());
+        }
         return properties;
     }
-
-    public boolean allSet()
-    {
-        String s = getServer();
-        String u = getUsername();
-        String p = getPassword();
-        return s != null && !s.isEmpty() && u != null && !u.isEmpty() && p != null && !p.isEmpty();
-    }
+    
     public String[] getTables()
     {
         String tables = (String) get(TABLES);
@@ -108,6 +106,14 @@ public class ServerProperties extends DataObject
         set(SERVER, server);
     }
 
+    public void setSavePassword(boolean save)
+    {
+        set(SAVEPASSWORD, save);
+    }
+    public boolean isSavePassword()
+    {
+        return (Boolean) get(SAVEPASSWORD);
+    }
     @Override
     public Key createKey()
     {

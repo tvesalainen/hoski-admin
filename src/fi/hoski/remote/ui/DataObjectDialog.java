@@ -58,7 +58,8 @@ public class DataObjectDialog<T extends DataObject> extends JDialog
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
         add(buttonPanel, BorderLayout.SOUTH);
-        JButton ok = new JButton(uiBundle.getString("OK"));
+        final JButton ok = new JButton(uiBundle.getString("OK"));
+        getRootPane().setDefaultButton(ok);
         ActionListener okAction = new ActionListener()
         {
 
@@ -68,6 +69,7 @@ public class DataObjectDialog<T extends DataObject> extends JDialog
                 String unsetProperty = dataObject.firstMandatoryNullProperty();
                 if (unsetProperty == null)
                 {
+                    ok.requestFocusInWindow();
                     accepted = true;
                     setVisible(false);
                 }
