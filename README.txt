@@ -4,7 +4,7 @@ Runtime installation
 
 Launch the application with Java Web Start from 
 
-https://hsk-members.appspot.com/HoskiAdmin/launch.html
+https://hsk-members.appspot.com/launch.html
 
 Development
 ===========
