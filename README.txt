@@ -2,24 +2,9 @@
 Runtime installation
 ====================
 
-Create a directory for installed application.
+Launch the application with Java Web Start from 
 
-Download installation zip-file from http://hsk-members.appspot.com/HoskiAdmin.zip
-
-Extract zip contents to created file
-
-HoskiAdmin.bat will launch the application
-
-Create HoskiAdmin.properties and edit it.
-
-You can add following entries 
-
-remoteserver = <server>
-remoteuser = <your username>
-remotepassword = <password>
-
-We recommend that you leave remotepassword empty. In that case password can be entered
-at launch.
+https://hsk-members.appspot.com/HoskiAdmin/launch.html
 
 Development
 ===========
