@@ -3422,8 +3422,8 @@ public class Admin extends WindowAdapter
                     properties.load(pFile);
                 }
             }
-            boolean savePassword = Boolean.valueOf(properties.getProperty("savepassword"));
-            properties.remove("savepassword");
+            boolean savePassword = Boolean.valueOf(properties.getProperty(ServerProperties.SAVEPASSWORD));
+            properties.remove(ServerProperties.SAVEPASSWORD);
             ServerProperties sp = new ServerProperties(properties);
             sp.setSavePassword(savePassword);
             DataObjectDialog<ServerProperties> dod = new DataObjectDialog<ServerProperties>(null, sp.getModel().hide(ServerProperties.TABLES), sp);
@@ -3446,7 +3446,7 @@ public class Admin extends WindowAdapter
                         properties = sp.getProperties();
                         if (!sp.isSavePassword())
                         {
-                            properties.remove("serverpassword");
+                            properties.remove(ServerProperties.PASSWORD);
                         }
                         properties.store(os, "");
                     }
