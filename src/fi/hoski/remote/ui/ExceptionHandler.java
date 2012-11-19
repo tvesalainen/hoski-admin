@@ -42,7 +42,7 @@ public class ExceptionHandler extends EventQueue
             {
                 message = "Fatal: "+thr.getClass();
             }
-            JOptionPane.showMessageDialog(null, "General Error", message, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
