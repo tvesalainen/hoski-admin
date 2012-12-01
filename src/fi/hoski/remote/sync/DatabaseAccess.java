@@ -31,10 +31,9 @@ import fi.hoski.util.Utils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -54,6 +53,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Timo Vesalainen
@@ -117,6 +118,19 @@ public class DatabaseAccess extends SqlConnection implements DataAccess
                         }
                         else
                         {
+                            Class<?> type = target.getType(columnName);
+                            if (type != null)
+                            {
+                                try
+                                {
+                                    Constructor constructor = type.getConstructor(columnValue.getClass());
+                                    columnValue = constructor.newInstance(columnValue);
+                                }
+                                catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex)
+                                {
+                                    throw new IllegalArgumentException(ex);
+                                }
+                            }
                             if (
                                     (columnValue instanceof String) &&
                                     target.prettify(columnName)

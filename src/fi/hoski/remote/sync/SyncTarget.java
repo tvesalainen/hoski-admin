@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Timo Vesalainen
@@ -45,6 +47,8 @@ public class SyncTarget
     public static final String SELECT_FROM = "select * from %s";
     public static final String FOREIGN = "foreign-%s";
     public static final String CHANGECASE = "changeCase-%s";
+    public static final String TYPECOLUMNS = "type-%s";
+    public static final String TYPE = "type-%s-%s";
 
     private String name;
     private boolean remoteMaster;
@@ -57,6 +61,7 @@ public class SyncTarget
     private String sql;
     private Map<String,Integer> sqlMetadata = new HashMap<>();
     private Set<Key> deletedReferences = new HashSet<>();
+    private Map<String,Class<?>> typeMap = new HashMap<>();
 
     public SyncTarget(String name)
     {
@@ -65,8 +70,8 @@ public class SyncTarget
     
     public static List<SyncTarget> create(Properties properties)
     {
-        List<SyncTarget> list = new ArrayList<SyncTarget>();
-        Map<String,SyncTarget> map = new HashMap<String,SyncTarget>();
+        List<SyncTarget> list = new ArrayList<>();
+        Map<String,SyncTarget> map = new HashMap<>();
         for (String name : getList(properties, TABLES))
         {
             SyncTarget target = new SyncTarget(name);
@@ -118,6 +123,21 @@ public class SyncTarget
             String changeCase = String.format(CHANGECASE, tableName);
             target.prettify.addAll(getList(properties, changeCase));
             
+            String typeColumns = String.format(TYPECOLUMNS, tableName);
+            List<String> typeColumnList = getList(properties, typeColumns);
+            for (String tc : typeColumnList)
+            {
+                String typeString = String.format(TYPE, tableName, tc);
+                try
+                {
+                    Class<?> cls = Class.forName(typeString);
+                    target.typeMap.put(tc, cls);
+                }
+                catch (ClassNotFoundException ex)
+                {
+                    throw new IllegalArgumentException(ex);
+                }
+            }
         }
         //sort(list);
         return list;
@@ -213,6 +233,10 @@ public class SyncTarget
     public Collection<String> getColumns()
     {
         return sqlMetadata.keySet();
+    }
+    public Class<?> getType(String columnName)
+    {
+        return typeMap.get(columnName);
     }
     private static Map<String,String> getMap(Properties properties, String key)
     {
