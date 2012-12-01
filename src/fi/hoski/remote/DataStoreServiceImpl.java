@@ -126,86 +126,103 @@ public class DataStoreServiceImpl implements DataStoreService
         ih.updateInspection(reservations);
     }
 
+    @Override
     public Entity retrieveUser(String email) throws EmailNotUniqueException
     {
         return users.retrieveUser(email);
     }
 
+    @Override
     public Entity retrieveCredentials(String email) throws EmailNotUniqueException
     {
         return users.retrieveCredentials(email);
     }
 
+    @Override
     public Map<String, Object> getUserData(Entity user)
     {
         return users.getUserData(user);
     }
 
+    @Override
     public void addSideReferences(Map<String, Entity> entityMap, Entity entity)
     {
         users.addSideReferences(entityMap, entity);
     }
 
+    @Override
     public Map<String, String[]> getMap(Entity entity)
     {
         return entities.getMap(entity);
     }
 
+    @Override
     public Entity createEntity(Map<String, String[]> parameters)
     {
         return entities.createEntity(parameters);
     }
 
+    @Override
     public boolean hasChilds(Event event)
     {
         return events.hasChilds(event);
     }
 
+    @Override
     public List<Event> getEvents(EventType type)
     {
         return events.getEvents(type);
     }
 
+    @Override
     public void deleteEvents(List<Event> events)
     {
         this.events.deleteEvents(events);
     }
 
+    @Override
     public int childCount(Event event)
     {
         return events.childCount(event);
     }
 
+    @Override
     public Options<Event> getEventSelection(EventType type)
     {
         return events.getEventSelection(type);
     }
 
+    @Override
     public void createReservation(Event event, Reservation reservation, boolean replace) throws EventFullException, DoubleBookingException, BoatNotFoundException, EntityNotFoundException, MandatoryPropertyMissingException
     {
         events.createReservation(event, reservation, replace);
     }
 
+    @Override
     public void createReservation(Reservation reservation, boolean replace) throws EventFullException, DoubleBookingException, BoatNotFoundException, EntityNotFoundException, MandatoryPropertyMissingException
     {
         events.createReservation(reservation, replace);
     }
 
+    @Override
     public List<Reservation> getReservations(Event event)
     {
         return events.getReservations(event);
     }
 
+    @Override
     public void put(List<? extends DataObject> dataObjectList)
     {
         entities.put(dataObjectList);
     }
 
+    @Override
     public Entity put(DataObject dataObject)
     {
         return entities.put(dataObject);
     }
 
+    @Override
     public void upload(DataObject attachTo, Attachment.Type type, String title, File... files) throws IOException
     {
         entities.upload(attachTo, type, title, files);
@@ -217,191 +234,244 @@ public class DataStoreServiceImpl implements DataStoreService
         entities.removeAttachments(attachments);
     }
 
+    @Override
     public Entity get(Key key) throws EntityNotFoundException
     {
         return entities.get(key);
     }
 
+    @Override
     public List<Entity> getChilds(Key parent)
     {
         return entities.getChilds(parent);
     }
 
+    @Override
     public List<Entity> getChilds(Key parent, String kind)
     {
         return entities.getChilds(parent, kind);
     }
 
+    @Override
     public void delete(List<? extends DataObject> dataObjectList)
     {
         entities.delete(dataObjectList);
     }
 
+    @Override
     public void delete(DataObject dataObject)
     {
         entities.delete(dataObject);
     }
 
+    @Override
     public Entity get(String kind, String name) throws EntityNotFoundException
     {
         return entities.get(kind, name);
     }
 
+    @Override
     public List<Entity> convert(List<? extends DataObject> dataObjectList)
     {
         return entities.convert(dataObjectList);
     }
 
+    @Override
     public List<AnyDataObject> retrieve(String kind, String queryProperty, Object queryValue, String... properties)
     {
         return entities.retrieve(kind, queryProperty, queryValue, properties);
     }
 
+    @Override
     public void store(Iterator<Entity> entities)
     {
         this.entities.store(entities);
     }
 
+    @Override
     public int remove(List<String> kindList)
     {
         return entities.remove(kindList);
     }
 
+    @Override
     public int restore(Collection<String> kindList, ObjectInputStream in) throws IOException
     {
         return entities.restore(kindList, in);
     }
 
+    @Override
     public int restore(ObjectInputStream in) throws IOException
     {
         return entities.restore(in);
     }
 
+    /**
+     *
+     * @param year
+     * @return
+     */
     public int remove(long year)
     {
         return entities.remove(year);
     }
 
+    /**
+     *
+     * @param kindList
+     * @param out
+     * @return
+     * @throws IOException
+     */
     public int backup(List<String> kindList, ObjectOutputStream out) throws IOException
     {
         return entities.backup(kindList, out);
     }
 
+    @Override
     public int backup(long year, ObjectOutputStream out) throws IOException
     {
         return entities.backup(year, out);
     }
 
+    @Override
     public void putMessages(Messages messages)
     {
         entities.putMessages(messages);
     }
 
+    @Override
     public Iterator<Entity> load(List<String> kindList)
     {
         return entities.load(kindList);
     }
 
+    @Override
     public List<String> kindList()
     {
         return entities.kindList();
     }
 
+    @Override
     public String getMessage(String key)
     {
         return entities.getMessage(key);
     }
 
+    @Override
     public Messages getMessages()
     {
         return entities.getMessages();
     }
 
+    @Override
     public void sendMail(InternetAddress from, String subject, String body, String htmlBody, List<InternetAddress> addresses)
     {
         mail.sendMail(from, subject, body, htmlBody, addresses);
     }
 
+    @Override
     public void sendMail(InternetAddress from, String subject, String body, String htmlBody, InternetAddress... addresses)
     {
         mail.sendMail(from, subject, body, htmlBody, addresses);
     }
 
+    @Override
     public void sendMail(String subject, String body, String htmlBody, InternetAddress... addresses) throws UnsupportedEncodingException
     {
         mail.sendMail(subject, body, htmlBody, addresses);
     }
 
+    @Override
     public void sendMail(String subject, String body, String htmlBody, List<InternetAddress> addresses) throws UnsupportedEncodingException
     {
         mail.sendMail(subject, body, htmlBody, addresses);
     }
 
+    @Override
     public InternetAddress createInternetAddress(DataObject dataObject) throws UnsupportedEncodingException
     {
         return mail.createInternetAddress(dataObject);
     }
 
+    @Override
     public List<SMSStatus> send(String numberFrom, List<String> numberTo, String message) throws IOException, SMSException
     {
         return sms.send(numberFrom, numberTo, message);
     }
 
+    @Override
     public SMSStatus send(String numberFrom, String numberTo, String message) throws IOException, SMSException
     {
         return sms.send(numberFrom, numberTo, message);
     }
 
+    @Override
     public int messageSize(String message) throws CharacterCodingException, IllegalCharacterException
     {
         return sms.messageSize(message);
     }
 
+    @Override
     public int messageCount(String message) throws CharacterCodingException, IllegalCharacterException
     {
         return sms.messageCount(message);
     }
 
+    @Override
     public int messagesLeft() throws IOException, SMSException
     {
         return sms.messagesLeft();
     }
 
+    @Override
     public void updateInspection(List<Reservation> reservations)
     {
         events.updateInspection(reservations);
     }
 
+    @Override
     public Event getEvent(EventType type, long id) throws EntityNotFoundException
     {
         return events.getEvent(type, id);
     }
 
+    @Override
     public List<Event> getEvents(EventType type, Day from, Integer count)
     {
         return events.getEvents(type, from, count);
     }
 
+    @Override
     public Event getEvent(String eventKey) throws EntityNotFoundException
     {
         return events.getEvent(eventKey);
     }
 
+    /**
+     *
+     * @param event
+     * @return
+     */
+    @Override
     public String getEventLabel(Event event)
     {
         return events.getEventLabel(event);
     }
 
+    @Override
     public List<SMSStatus> send(List<String> numberTo, String message) throws IOException, SMSException
     {
         return sms.send(numberTo, message);
     }
 
+    @Override
     public SMSStatus send(String numberTo, String message) throws IOException, SMSException
     {
         return sms.send(numberTo, message);
     }
 
+    @Override
     public String status(String trackingId) throws IOException, SMSException
     {
         return sms.status(trackingId);
@@ -432,141 +502,173 @@ public class DataStoreServiceImpl implements DataStoreService
         }
     }
 
+    @Override
     public DataObject newInstance(Key key) throws EntityNotFoundException
     {
         return entities.newInstance(key);
     }
 
+    @Override
     public DataObject newInstance(Entity entity) throws EntityNotFoundException
     {
         return entities.newInstance(entity);
     }
 
+    @Override
     public DataObjectModel getModel(String kind)
     {
         return entities.getModel(kind);
     }
 
+    @Override
     public Key getRootKey()
     {
         return entities.getRootKey();
     }
 
+    @Override
     public Key getYearKey()
     {
         return entities.getYearKey();
     }
 
+    @Override
     public Options<String> getShiftOptions(String memberKeyString)
     {
         return patrolShifts.getShiftOptions(memberKeyString);
     }
 
+    @Override
     public List<PatrolShift> getShifts(Key memberKey)
     {
         return patrolShifts.getShifts(memberKey);
     }
 
+    @Override
     public boolean swapShift(Map<String, Object> user, String shift, String... excl) throws EntityNotFoundException, IOException, SMSException, AddressException
     {
         return patrolShifts.swapShift(user, shift, excl);
     }
 
+    @Override
     public boolean swapShift(SwapRequest req) throws EntityNotFoundException, IOException, SMSException, AddressException
     {
         return patrolShifts.swapShift(req);
     }
 
+    @Override
     public String getShiftString(Entity patrolShift, String format) throws EntityNotFoundException
     {
         return patrolShifts.getShiftString(patrolShift, format);
     }
 
+    @Override
     public List<DataObject> getSwapLog() throws EntityNotFoundException
     {
         return patrolShifts.getSwapLog();
     }
 
+    @Override
     public void deleteSwaps(int memberNumber)
     {
         patrolShifts.deleteSwaps(memberNumber);
     }
 
+    @Override
     public Day[] firstAndLastShift() throws EntityNotFoundException
     {
         return patrolShifts.firstAndLastShift();
     }
 
+    @Override
     public void removeSwapShift(Map<String, Object> user, String shift) throws EntityNotFoundException, IOException
     {
         patrolShifts.removeSwapShift(user, shift);
     }
 
+    @Override
     public List<SwapRequest> pendingSwapRequests(Map<String, Object> user) throws EntityNotFoundException, IOException
     {
         return patrolShifts.pendingSwapRequests(user);
     }
 
+    @Override
     public void changeShiftExecutor(PatrolShift shift, DataObject member)
     {
         patrolShifts.changeShiftExecutor(shift, member);
     }
 
+    @Override
     public void handleExpiredRequests(int margin) throws EntityNotFoundException
     {
         patrolShifts.handleExpiredRequests(margin);
     }
 
+    @Override
     public RaceSeries getExistingRace(RaceSeries raceSeries)
     {
         return races.getExistingRace(raceSeries);
     }
 
+    /**
+     *
+     * @param raceSeries
+     * @param classList
+     */
     public void putRace(RaceSeries raceSeries, List<RaceFleet> classList)
     {
         races.putRace(raceSeries, classList);
     }
 
+    @Override
     public List<RaceSeries> getRaces() throws EntityNotFoundException
     {
         return races.getRaces();
     }
 
+    @Override
     public List<RaceFleet> getFleets(RaceSeries raceSeries) throws EntityNotFoundException
     {
         return races.getFleets(raceSeries);
     }
 
+    @Override
     public List<RaceEntry> getUnpaidRaceEntries() throws EntityNotFoundException
     {
         return races.getUnpaidRaceEntries();
     }
 
+    @Override
     public List<RaceEntry> getRaceEntriesFor(DataObject race) throws EntityNotFoundException
     {
         return races.getRaceEntriesFor(race);
     }
 
+    @Override
     public RaceEntry raceEntryForReference(long reference) throws EntityNotFoundException
     {
         return races.raceEntryForReference(reference);
     }
 
+    @Override
     public List<Attachment> getAttachmentsFor(DataObject parent)
     {
         return entities.getAttachmentsFor(parent);
     }
 
+    @Override
     public List<Attachment> getAttachmentsFor(Key parent)
     {
         return entities.getAttachmentsFor(parent);
     }
 
+    @Override
     public BankingBarcode getBarcode(RaceEntry raceEntry) throws EntityNotFoundException
     {
         return races.getBarcode(raceEntry);
     }
 
+    @Override
     public BankingBarcode getBarcode(Key raceEntryKey) throws EntityNotFoundException
     {
         return races.getBarcode(raceEntryKey);
