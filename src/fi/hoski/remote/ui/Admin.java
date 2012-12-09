@@ -43,6 +43,7 @@ import fi.hoski.remote.*;
 import fi.hoski.remote.sync.InspectionHandler;
 import fi.hoski.remote.sync.IsNotInspectedFilter;
 import fi.hoski.remote.sync.SqlConnection;
+import fi.hoski.remote.ui.sms.SMSPlugin;
 import fi.hoski.sms.SMSException;
 import fi.hoski.util.BoatInfo;
 import fi.hoski.util.CreditorReference;
@@ -75,6 +76,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.vesalainen.parsers.sql.dsql.ui.WorkBench;
 
 /**
  * @author Timo Vesalainen
@@ -120,6 +122,7 @@ public class Admin extends WindowAdapter
             throw new IllegalArgumentException(ex);
         }
     }
+    private WorkBench workBench;
 
     public Admin(ServerProperties serverProperties) throws EntityNotFoundException, IOException, SMSException
     {
@@ -167,6 +170,7 @@ public class Admin extends WindowAdapter
         menuEvent();
         menuReservation();
         menuSwapPatrolShift();
+        menuQuery();
 
         frame.setJMenuBar(menuBar);
 
@@ -1761,6 +1765,10 @@ public class Admin extends WindowAdapter
     public void windowClosing(WindowEvent e)
     {
         confirmSaveReservations();
+        if (workBench != null)
+        {
+            workBench.close();
+        }
         System.exit(0);
     }
 
@@ -2584,6 +2592,79 @@ public class Admin extends WindowAdapter
         }
     }
 
+    private void menuQuery()
+    {
+        JMenu queryMenu = new JMenu(TextUtil.getString("QUERIES"));
+        menuBar.add(queryMenu);
+        queryMenu.add(menuItemQuery());
+        queryMenu.add(menuItemEditQuery());
+    }
+
+    private JMenuItem menuItemQuery()
+    {
+        ActionListener queryAction = new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                startQuery(true, false);
+            }
+
+        };
+        queryAction = createActionListener(frame, queryAction);
+        JMenuItem queryItem = new JMenuItem(TextUtil.getString("START QUERY"));
+        queryItem.addActionListener(queryAction);
+        return queryItem;
+    }
+
+    private JMenuItem menuItemEditQuery()
+    {
+        ActionListener queryAction = new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                startQuery(true, true);
+            }
+
+        };
+        queryAction = createActionListener(frame, queryAction);
+        JMenuItem queryItem = new JMenuItem(TextUtil.getString("EDIT QUERY"));
+        queryItem.addActionListener(queryAction);
+        return queryItem;
+    }
+
+    private void startQuery(boolean readonly, boolean edit)
+    {
+        try
+        {
+            if (workBench == null)
+            {
+                workBench = new WorkBench(serverProperties.getProperties(), true, readonly);
+                Messages texts = dss.getMessages();
+                workBench.addFetchResultPlugin(
+                        new SMSPlugin(
+                        texts.getString(Messages.SMSUSERNAME),
+                        texts.getString(Messages.SMSPASSWORD)
+                        ));
+            }
+            if (edit)
+            {
+                workBench.setVisible(true);
+            }
+            else
+            {
+                workBench.open();
+            }
+        }
+        catch (IOException | InterruptedException ex)
+        {
+            throw new IllegalArgumentException(ex);
+        }
+    }
+    
     private AnyDataObject chooseMember(String title)
     {
         // search a member
@@ -3416,7 +3497,13 @@ public class Admin extends WindowAdapter
             }
             catch (UnavailableServiceException ex)
             {
-                URL url = new URL("https://hsk-members.appspot.com/HoskiAdmin/hoski-admin.properties");
+                // not web start
+                String propertyUrl = "https://hsk-members.appspot.com/HoskiAdmin/hoski-admin.properties";
+                if (args.length > 0)
+                {
+                    propertyUrl = args[0];
+                }
+                URL url = new URL(propertyUrl);
                 try (InputStream pFile = url.openStream())
                 {
                     properties.load(pFile);
@@ -3451,7 +3538,8 @@ public class Admin extends WindowAdapter
                         properties.store(os, "");
                     }
                 }
-                RemoteAppEngine.init(sp.getServer(), sp.getUsername(), sp.getPassword());
+                String[] server = sp.getServer().split(",");
+                RemoteAppEngine.init(server[0], sp.getUsername(), sp.getPassword());
                 DataStoreProxy dsp = new DataStoreProxy(properties);
                 dsp.start();
                 Admin r = new Admin(sp);
