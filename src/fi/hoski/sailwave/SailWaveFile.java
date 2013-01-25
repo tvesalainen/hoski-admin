@@ -182,6 +182,10 @@ public class SailWaveFile implements Serializable
     }
     private void set(String property, String value)
     {
+        if (value == null)
+        {
+            value = "";
+        }
         for (String[] ar : list)
         {
             if (property.equals(ar[0]))
