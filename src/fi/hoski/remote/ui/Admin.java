@@ -156,7 +156,7 @@ public class Admin extends WindowAdapter
     /**
      * Initializes frame
      */
-    private void initFrame() throws EntityNotFoundException
+    private void initFrame() throws EntityNotFoundException, MalformedURLException
     {
         Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandler());
         frame = new JFrame(TextUtil.getString("ADMIN") + " " + creator + " / " + server + " Version: " + Version.version());
@@ -174,7 +174,7 @@ public class Admin extends WindowAdapter
 
         frame.setJMenuBar(menuBar);
 
-        URL clubUrl = getClass().getResource("images/club.ico");
+        URL clubUrl = new URL("http", server, "club.ico");
         ImageIcon clubIcon = new ImageIcon(clubUrl);
         frame.setIconImage(clubIcon.getImage());
         frame.pack();
