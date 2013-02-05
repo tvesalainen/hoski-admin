@@ -102,8 +102,8 @@ public class Version
 }
     </echo>
     </target>
-    <target name="generate-html-preview">
-        <copy todir="../HoskiWebapp/web/HoskiAdmin">
+    <target name="-post-jar">
+        <copy todir="/Users/tkv/Dropbox/HoskiAdmin">
             <fileset dir="dist"/>
         </copy>
     </target>
