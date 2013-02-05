@@ -3470,44 +3470,15 @@ public class Admin extends WindowAdapter
     {
         try
         {
-            PersistenceService persistenceService = null;
-            URL propertiesUrl = null;
             Properties properties = new Properties();
-            try
+            if (args.length == 0)
             {
-                BasicService basicService = (BasicService) ServiceManager.lookup("javax.jnlp.BasicService");
-                URL codeBase = basicService.getCodeBase();
-                persistenceService = (PersistenceService) ServiceManager.lookup("javax.jnlp.PersistenceService");
-                propertiesUrl = codeBase.toURI().resolve("hoski-admin.properties").toURL();
-                try
-                {
-                    FileContents propertiesContents = persistenceService.get(propertiesUrl);
-                    try (InputStream is = propertiesContents.getInputStream())
-                    {
-                        properties.load(is);
-                    }
-                }
-                catch (FileNotFoundException ex)
-                {
-                    try (InputStream is = propertiesUrl.openStream())
-                    {
-                        properties.load(is);
-                    }
-                }
+                System.err.println("usage: ... <properties>");
+                System.exit(-1);
             }
-            catch (UnavailableServiceException ex)
+            try (InputStream pFile = new FileInputStream(args[0]))
             {
-                // not web start
-                String propertyUrl = "https://hsk-members.appspot.com/HoskiAdmin/hoski-admin.properties";
-                if (args.length > 0)
-                {
-                    propertyUrl = args[0];
-                }
-                URL url = new URL(propertyUrl);
-                try (InputStream pFile = url.openStream())
-                {
-                    properties.load(pFile);
-                }
+                properties.load(pFile);
             }
             boolean savePassword = Boolean.valueOf(properties.getProperty(ServerProperties.SAVEPASSWORD));
             properties.remove(ServerProperties.SAVEPASSWORD);
@@ -3516,28 +3487,6 @@ public class Admin extends WindowAdapter
             DataObjectDialog<ServerProperties> dod = new DataObjectDialog<ServerProperties>(null, sp.getModel().hide(ServerProperties.TABLES), sp);
             if (dod.edit())
             {
-                if (persistenceService != null)
-                {
-                    FileContents propertiesContents = null;
-                    try
-                    {
-                        propertiesContents = persistenceService.get(propertiesUrl);
-                    }
-                    catch (FileNotFoundException ex)
-                    {
-                        persistenceService.create(propertiesUrl, 2048);
-                        propertiesContents = persistenceService.get(propertiesUrl);
-                    }
-                    try (OutputStream os = propertiesContents.getOutputStream(true))
-                    {
-                        properties = sp.getProperties();
-                        if (!sp.isSavePassword())
-                        {
-                            properties.remove(ServerProperties.PASSWORD);
-                        }
-                        properties.store(os, "");
-                    }
-                }
                 String[] server = sp.getServer().split(",");
                 RemoteAppEngine.init(server[0], sp.getUsername(), sp.getPassword());
                 DataStoreProxy dsp = new DataStoreProxy(properties);
