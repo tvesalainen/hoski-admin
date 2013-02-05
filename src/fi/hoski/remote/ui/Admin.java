@@ -131,11 +131,14 @@ public class Admin extends WindowAdapter
         {
             creators[index++] = new EventEditor(eventType, this.getFrame());
         }
-        int credits = dss.messagesLeft();
-        if (credits < 100)
+        if (serverProperties.isZonerSMSSupported())
         {
-            String smsLeftString = TextUtil.getString("SMS LEFT");
-            JOptionPane.showMessageDialog(frame, smsLeftString + " " + credits);
+            int credits = dss.messagesLeft();
+            if (credits < 100)
+            {
+                String smsLeftString = TextUtil.getString("SMS LEFT");
+                JOptionPane.showMessageDialog(frame, smsLeftString + " " + credits);
+            }
         }
         try
         {
@@ -192,7 +195,10 @@ public class Admin extends WindowAdapter
             fileMenu.add(menuItemAttach());
             fileMenu.add(menuItemRemoveAttachment());
         }
-        fileMenu.add(menuItemSMSCredits());
+        if (serverProperties.isZonerSMSSupported())
+        {
+            fileMenu.add(menuItemSMSCredits());
+        }
         fileMenu.addSeparator();
         if (privileged)
         {
@@ -242,7 +248,10 @@ public class Admin extends WindowAdapter
         raceMenu.add(menuItemUploadRanking());
         raceMenu.addSeparator();
         raceMenu.add(menuItemRaceEmail());
-        raceMenu.add(menuItemRaceSMS());
+        if (serverProperties.isZonerSMSSupported())
+        {
+            raceMenu.add(menuItemRaceSMS());
+        }
         raceMenu.addSeparator();
         raceMenu.add(menuItemAttachRaceSeries());
         raceMenu.add(menuItemRemoveRaceSeriesAttachment());
@@ -341,6 +350,7 @@ public class Admin extends WindowAdapter
         JMenu mailMenu = new JMenu(TextUtil.getString("SEND EMAIL"));
         menuReservation.add(mailMenu);
         JMenu smsMenu = new JMenu(TextUtil.getString("SEND SMS"));
+        smsMenu.setEnabled(serverProperties.isZonerSMSSupported());
         menuReservation.add(smsMenu);
         for (final EventType eventType : EventType.values())
         {
@@ -3475,11 +3485,11 @@ public class Admin extends WindowAdapter
             {
                 properties.load(pFile);
             }
-            boolean savePassword = Boolean.valueOf(properties.getProperty(ServerProperties.SAVEPASSWORD));
-            properties.remove(ServerProperties.SAVEPASSWORD);
+            boolean savePassword = Boolean.valueOf(properties.getProperty(ServerProperties.SavePassword));
+            properties.remove(ServerProperties.SavePassword);
             ServerProperties sp = new ServerProperties(properties);
             sp.setSavePassword(savePassword);
-            DataObjectDialog<ServerProperties> dod = new DataObjectDialog<ServerProperties>(null, sp.getModel().hide(ServerProperties.TABLES), sp);
+            DataObjectDialog<ServerProperties> dod = new DataObjectDialog<ServerProperties>(null, sp.getModel().hide(ServerProperties.Tables), sp);
             if (dod.edit())
             {
                 String[] server = sp.getServer().split(",");

@@ -29,29 +29,31 @@ import java.util.Properties;
  */
 public class ServerProperties extends DataObject
 {
-    public static final String KIND = "ServerCredentials";
+    public static final String Kind = "ServerCredentials";
     
-    public static final String SERVER = "remoteserver";
-    public static final String USERNAME = "remoteuser";
-    public static final String PASSWORD = "remotepassword";
-    public static final String SAVEPASSWORD = "savepassword";
-    public static final String TABLES = "tables";
+    public static final String Server = "remoteserver";
+    public static final String Username = "remoteuser";
+    public static final String Password = "remotepassword";
+    public static final String SavePassword = "savepassword";
+    public static final String Tables = "tables";
+    public static final String SupportsZonerSMS = "supports-zoner-sms";
     
-    public static final DataObjectModel MODEL = new DataObjectModel(KIND);
+    public static final DataObjectModel Model = new DataObjectModel(Kind);
 
     static
     {
-        MODEL.property(SERVER);
-        MODEL.property(USERNAME);
-        MODEL.property(PASSWORD);
-        MODEL.setPassword(PASSWORD);
-        MODEL.property(SAVEPASSWORD, Boolean.class, false, false, false);
-        MODEL.property(TABLES);
+        Model.property(Server);
+        Model.property(Username);
+        Model.property(Password);
+        Model.setPassword(Password);
+        Model.property(SavePassword, Boolean.class, false, false, false);
+        Model.property(Tables);
+        Model.property(SupportsZonerSMS, Boolean.class, false, false, false);
     }
     
     public ServerProperties(Properties properties)
     {
-        super(new MapData(MODEL, properties));
+        super(new MapData(Model, properties));
     }
 
     public Properties getProperties()
@@ -66,7 +68,7 @@ public class ServerProperties extends DataObject
     
     public String[] getTables()
     {
-        String tables = (String) get(TABLES);
+        String tables = (String) get(Tables);
         if (tables != null)
         {
             return tables.split(",");
@@ -78,41 +80,45 @@ public class ServerProperties extends DataObject
     }
     public String getPassword()
     {
-        return (String) get(PASSWORD);
+        return (String) get(Password);
     }
 
     public void setPassword(String password)
     {
-        set(PASSWORD, password);
+        set(Password, password);
     }
 
     public String getUsername()
     {
-        return (String) get(USERNAME);
+        return (String) get(Username);
     }
 
     public void setUsername(String username)
     {
-        set(USERNAME, username);
+        set(Username, username);
     }
 
     public String getServer()
     {
-        return (String) get(SERVER);
+        return (String) get(Server);
     }
 
     public void setServer(String server)
     {
-        set(SERVER, server);
+        set(Server, server);
     }
 
     public void setSavePassword(boolean save)
     {
-        set(SAVEPASSWORD, save);
+        set(SavePassword, save);
     }
     public boolean isSavePassword()
     {
-        return (Boolean) get(SAVEPASSWORD);
+        return (Boolean) get(SavePassword);
+    }
+    public boolean isZonerSMSSupported()
+    {
+        return (Boolean) get(SupportsZonerSMS);
     }
     @Override
     public Key createKey()

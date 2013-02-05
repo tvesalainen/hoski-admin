@@ -26,6 +26,7 @@ import fi.hoski.mail.MailService;
 import fi.hoski.mail.MailServiceImpl;
 import fi.hoski.remote.sync.InspectionHandler;
 import fi.hoski.remote.sync.Synchronizer2;
+import fi.hoski.remote.ui.ServerProperties;
 import fi.hoski.sms.IllegalCharacterException;
 import fi.hoski.sms.SMSException;
 import fi.hoski.sms.SMSService;
@@ -57,17 +58,22 @@ public class DataStoreServiceImpl implements DataStoreService
     private Synchronizer2 synchronizer;
     private PatrolShifts patrolShifts;
     private Races races;
+    private boolean supportsZonerSMS;
 
     public DataStoreServiceImpl(Properties properties, DatastoreService datastore) throws EntityNotFoundException, SQLException, ClassNotFoundException
     {
         this.properties = properties;
         this.datastore = datastore;
         SystemLog systemLog = new SystemLog();
+        supportsZonerSMS = Boolean.parseBoolean(properties.getProperty(ServerProperties.SupportsZonerSMS, "false"));
         entities = new DSUtilsImpl(datastore);
         events = new EventsImpl(datastore, entities);
         users = new UsersImpl(datastore);
         mail = new MailServiceImpl();
-        sms = new ZonerSMSService(datastore);
+        if (supportsZonerSMS)
+        {
+            sms = new ZonerSMSService(datastore);
+        }
         synchronizer = new Synchronizer2(properties);
         patrolShifts = new PatrolShiftsImpl(systemLog, 5, datastore, entities, mail, sms);
         races = new RacesImpl(systemLog, datastore, entities, mail);
