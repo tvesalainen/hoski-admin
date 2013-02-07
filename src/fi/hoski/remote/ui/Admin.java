@@ -165,9 +165,12 @@ public class Admin extends WindowAdapter
 
         menuFile();
         menuRace();
-        menuEvent();
-        menuReservation();
-        menuSwapPatrolShift();
+        if (serverProperties.isSuperUser())
+        {
+            menuEvent();
+            menuReservation();
+            menuSwapPatrolShift();
+        }
         menuQuery();
 
         frame.setJMenuBar(menuBar);
@@ -3491,7 +3494,7 @@ public class Admin extends WindowAdapter
             sp.setSavePassword(savePassword);
             DataObjectDialog<ServerProperties> dod = new DataObjectDialog<>(
                     null, 
-                    sp.getModel().hide(ServerProperties.Tables, ServerProperties.SupportsZonerSMS), 
+                    sp.getModel().hide(ServerProperties.Tables, ServerProperties.SupportsZonerSMS, ServerProperties.SuperUser), 
                     sp);
             if (dod.edit())
             {

@@ -36,6 +36,7 @@ public class ServerProperties extends DataObject
     public static final String Password = "remotepassword";
     public static final String SavePassword = "savepassword";
     public static final String Tables = "tables";
+    public static final String SuperUser = "super-user";
     public static final String SupportsZonerSMS = "supports-zoner-sms";
     
     public static final DataObjectModel Model = new DataObjectModel(Kind);
@@ -48,6 +49,7 @@ public class ServerProperties extends DataObject
         Model.setPassword(Password);
         Model.property(SavePassword, Boolean.class, false, false, false);
         Model.property(Tables);
+        Model.property(SuperUser, Boolean.class, false, false, false);
         Model.property(SupportsZonerSMS, Boolean.class, false, false, false);
     }
     
@@ -119,6 +121,10 @@ public class ServerProperties extends DataObject
     public boolean isZonerSMSSupported()
     {
         return (Boolean) get(SupportsZonerSMS);
+    }
+    public boolean isSuperUser()
+    {
+        return (Boolean) get(SuperUser);
     }
     @Override
     public Key createKey()
