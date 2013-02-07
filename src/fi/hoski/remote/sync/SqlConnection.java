@@ -42,6 +42,10 @@ public class SqlConnection
         this.properties = properties;
         debug = Boolean.parseBoolean(properties.getProperty("debug"));
         String driverName = properties.getProperty("driver");
+        if (driverName == null)
+        {
+            throw new SQLException("driver not in property");
+        }
         Class.forName(driverName);
         String databaseURL = properties.getProperty("databaseURL")+properties.getProperty("dsn");
         if (debug) DriverManager.setLogWriter(new PrintWriter(System.err));
