@@ -808,4 +808,16 @@ public class DataStoreServiceImpl implements DataStoreService
         a.append("changed="+changed+'\n');
     }
 
+    @Override
+    public void deleteWithChilds(DataObject dataObject)
+    {
+        entities.deleteWithChilds(dataObject);
+    }
+
+    @Override
+    public void removeRace(RaceSeries raceSeries)
+    {
+        races.removeRace(raceSeries);
+    }
+
 }

@@ -242,6 +242,7 @@ public class Admin extends WindowAdapter
         menuBar.add(raceMenu);
         raceMenu.add(menuItemUploadRaceSeries());
         raceMenu.add(menuItemEditRaceSeries());
+        raceMenu.add(menuItemRemoveRaceSeries());
         raceMenu.add(menuItemDownloadCompetitorsForSailwave());
         raceMenu.add(menuItemInsertCompetitorsToSailwave());
         raceMenu.add(menuItemDownloadCompetitorsAsCVS());
@@ -1467,6 +1468,32 @@ public class Admin extends WindowAdapter
         editRaceSeriesAction = createActionListener(frame, editRaceSeriesAction);
         editRaceSeriesItem.addActionListener(editRaceSeriesAction);
         return editRaceSeriesItem;
+    }
+
+    private JMenuItem menuItemRemoveRaceSeries()
+    {
+        // upload series
+        JMenuItem removeRaceSeriesItem = new JMenuItem(TextUtil.getString("REMOVE RACE"));
+        ActionListener removeRaceSeriesAction = new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try
+                {
+                    removeSeries();
+                }
+                catch (IOException | EntityNotFoundException ex)
+                {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, ex.getMessage());
+                }
+            }
+        };
+        removeRaceSeriesAction = createActionListener(frame, removeRaceSeriesAction);
+        removeRaceSeriesItem.addActionListener(removeRaceSeriesAction);
+        return removeRaceSeriesItem;
     }
 
     private JMenuItem menuItemSync()
@@ -3038,6 +3065,21 @@ public class Admin extends WindowAdapter
             if (rd.edit())
             {
                 dss.putRace(raceSeries, fleetList);
+            }
+        }
+    }
+
+    private void removeSeries() throws IOException, EntityNotFoundException
+    {
+        RaceSeries raceSeries = chooseRace();
+        if (raceSeries != null)
+        {
+            String event = (String) raceSeries.get(RaceSeries.EVENT);
+            if (JOptionPane.showConfirmDialog(
+                    panel,
+                    TextUtil.getString("CONFIRM DELETE")) == JOptionPane.YES_OPTION)
+            {
+                dss.deleteWithChilds(raceSeries);
             }
         }
     }
