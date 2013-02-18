@@ -140,6 +140,7 @@ public class Admin extends WindowAdapter
                 JOptionPane.showMessageDialog(frame, smsLeftString + " " + credits);
             }
         }
+        privileged = serverProperties.isSuperUser();
         try
         {
             new SqlConnection(serverProperties.getProperties());
