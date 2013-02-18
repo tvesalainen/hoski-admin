@@ -47,10 +47,10 @@ public class ServerProperties extends DataObject
         Model.property(Username);
         Model.property(Password);
         Model.setPassword(Password);
-        Model.property(SavePassword, Boolean.class, false, false, false);
+        Model.property(SavePassword, String.class);
         Model.property(Tables);
-        Model.property(SuperUser, Boolean.class, false, false, false);
-        Model.property(SupportsZonerSMS, Boolean.class, false, false, false);
+        Model.property(SuperUser, String.class);
+        Model.property(SupportsZonerSMS, String.class);
     }
     
     public ServerProperties(Properties properties)
@@ -116,15 +116,15 @@ public class ServerProperties extends DataObject
     }
     public boolean isSavePassword()
     {
-        return (Boolean) get(SavePassword);
+        return Boolean.parseBoolean((String)get(SavePassword));
     }
     public boolean isZonerSMSSupported()
     {
-        return (Boolean) get(SupportsZonerSMS);
+        return Boolean.parseBoolean((String)get(SupportsZonerSMS));
     }
     public boolean isSuperUser()
     {
-        return (Boolean) get(SuperUser);
+        return Boolean.parseBoolean((String)get(SuperUser));
     }
     @Override
     public Key createKey()
