@@ -187,6 +187,17 @@ public class RaceDialog extends JDialog implements DataObjectObserver
                 }
             }
         }
+        if (RaceSeries.CLOSINGDATE2.equals(property))
+        {
+            for (RaceFleet fleet : raceFleetList)
+            {
+                Boolean ranking = (Boolean) fleet.get(RaceFleet.RANKING);
+                if (ranking == null || !ranking)
+                {
+                    fleet.set(property, newValue);
+                }
+            }
+        }
         if (RaceSeries.STARTTIME.equals(property))
         {
             for (RaceFleet fleet : raceFleetList)
