@@ -77,6 +77,7 @@ public class DataObjectTransferHandler<T extends DataObject> extends TransferHan
     {
         try
         {
+            @SuppressWarnings("unchecked")
             DataObjectTransferable<T> transferable = (DataObjectTransferable<T>) data;
             if (MOVE == action)
             {
@@ -106,6 +107,7 @@ public class DataObjectTransferHandler<T extends DataObject> extends TransferHan
         try
         {
             Transferable transferable = support.getTransferable();
+            @SuppressWarnings("unchecked")
             T transferData = (T) transferable.getTransferData(transferable.getTransferDataFlavors()[0]);
             int index = model.remove(transferData);
             DropLocation dropLocation = support.getDropLocation();

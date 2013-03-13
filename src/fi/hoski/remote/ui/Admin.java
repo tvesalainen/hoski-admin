@@ -2991,7 +2991,7 @@ public class Admin extends WindowAdapter
         DataObjectModel model = RaceSeries.MODEL.hide(
                 RaceSeries.ID,
                 RaceSeries.SAILWAVEFILE);
-        DataObjectModel listModel = RaceFleet.MODEL.hide(RaceFleet.RATINGSYSTEM, RaceFleet.CLOSINGDATE, RaceFleet.RANKING);
+        DataObjectModel listModel = RaceFleet.MODEL.hide(RaceFleet.RATINGSYSTEM, RaceFleet.CLOSINGDATE, RaceFleet.CLOSINGDATE2, RaceFleet.RANKING);
         RaceDialog rc = new RaceDialog(frame, swf.getEvent(), model, rs, listModel, fleetList);
         rc.setEditable(listModel.getProperties());
         if (rc.edit())
