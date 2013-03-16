@@ -3258,7 +3258,7 @@ public class Admin extends WindowAdapter
 
     private DataObject chooseRaceSeriesOrFleet() throws EntityNotFoundException
     {
-        KeyTreeChooser chooser = new KeyTreeChooser(frame, TextUtil.getString("CHOOSE COMPETITORS"), dss, dss.getYearKey(), "Year", "RaceSeries", "RaceFleet");
+        KeyTreeChooser chooser = new KeyTreeChooser(frame, TextUtil.getString("CHOOSE COMPETITORS"), dss, dss.getRootKey(), "Root", "Year", "RaceSeries", "RaceFleet");
         return chooser.select();
     }
 

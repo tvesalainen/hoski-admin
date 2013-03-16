@@ -41,10 +41,10 @@ public class KeyTreeModel implements TreeModel
 {
     private DataStoreService dss;
     private KeyWrapper root;
-    private Map<KeyWrapper,List<KeyWrapper>> childs = new HashMap<KeyWrapper,List<KeyWrapper>>();
-    private List<TreeModelListener> listeners = new ArrayList<TreeModelListener>();
-    private Map<KeyWrapper,Entity> entityMap = new HashMap<KeyWrapper,Entity>();
-    private Map<String,String> childMap = new HashMap<String,String>();
+    private Map<KeyWrapper,List<KeyWrapper>> childs = new HashMap<>();
+    private List<TreeModelListener> listeners = new ArrayList<>();
+    private Map<KeyWrapper,Entity> entityMap = new HashMap<>();
+    private Map<String,String> childMap = new HashMap<>();
     private Component component;
 
     public KeyTreeModel(DataStoreService dss, Key root, String... kinds)
