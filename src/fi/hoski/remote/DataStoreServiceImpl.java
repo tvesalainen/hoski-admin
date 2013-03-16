@@ -820,4 +820,10 @@ public class DataStoreServiceImpl implements DataStoreService
         races.removeRace(raceSeries);
     }
 
+    @Override
+    public void addYear(int year)
+    {
+        entities.addYear(year);
+    }
+
 }

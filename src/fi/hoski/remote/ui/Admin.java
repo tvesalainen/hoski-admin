@@ -218,6 +218,7 @@ public class Admin extends WindowAdapter
             fileMenu.add(menuItemInspectionFix1());
             fileMenu.add(menuItemSql());
             fileMenu.add(menuItemUninspectedBoats());
+            fileMenu.add(menuItemAddYear());
         }
         fileMenu.addSeparator();
 
@@ -752,6 +753,28 @@ public class Admin extends WindowAdapter
         return sqlItem;
     }
 
+    private JMenuItem menuItemAddYear()
+    {
+        final String title = TextUtil.getString("ADD YEAR");
+        JMenuItem addYearItem = new JMenuItem(title);
+        ActionListener addYearAction = new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String year = JOptionPane.showInputDialog(frame, TextUtil.getString("ADD YEAR"));
+                int y = Integer.parseInt(year);
+                if (y >= 1800 && y <= 2100)
+                {
+                    dss.addYear(y);
+                }
+            }
+        };
+        addYearAction = createActionListener(frame, addYearAction);
+        addYearItem.addActionListener(addYearAction);
+        return addYearItem;
+    }
     private JMenuItem menuItemInspectAllLightBoats()
     {
         final String title = TextUtil.getString("INSPECT ALL LIGHT BOATS");
@@ -3258,7 +3281,7 @@ public class Admin extends WindowAdapter
 
     private DataObject chooseRaceSeriesOrFleet() throws EntityNotFoundException
     {
-        KeyTreeChooser chooser = new KeyTreeChooser(frame, TextUtil.getString("CHOOSE COMPETITORS"), dss, dss.getRootKey(), "Root", "Year", "RaceSeries", "RaceFleet");
+        KeyTreeChooser chooser = new KeyTreeChooser(frame, TextUtil.getString("CHOOSE RACE"), dss, dss.getRootKey(), "Root", "Year", "RaceSeries", "RaceFleet");
         return chooser.select();
     }
 
