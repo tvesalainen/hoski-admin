@@ -271,12 +271,6 @@ public class DataStoreServiceImpl implements DataStoreService
     }
 
     @Override
-    public Entity get(String kind, String name) throws EntityNotFoundException
-    {
-        return entities.get(kind, name);
-    }
-
-    @Override
     public List<Entity> convert(List<? extends DataObject> dataObjectList)
     {
         return entities.convert(dataObjectList);

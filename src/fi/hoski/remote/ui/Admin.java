@@ -1567,21 +1567,12 @@ public class Admin extends WindowAdapter
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                try
+                Messages messages = dss.getMessages();
+                DataObjectDialog<Messages> dod = new DataObjectDialog<Messages>(frame, Messages.MODEL, messages);
+                dod.setPreferredSize(new Dimension(800, 600));
+                if (dod.edit())
                 {
-                    Entity entity = dss.get(Messages.KIND, Messages.NAME);
-                    Messages messages = new Messages(entity);
-                    DataObjectDialog<Messages> dod = new DataObjectDialog<Messages>(frame, Messages.MODEL, messages);
-                    dod.setPreferredSize(new Dimension(800, 600));
-                    if (dod.edit())
-                    {
-                        dss.put(messages);
-                    }
-                }
-                catch (EntityNotFoundException ex)
-                {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(frame, ex.getMessage());
+                    dss.put(messages);
                 }
             }
         };
@@ -1792,17 +1783,7 @@ public class Admin extends WindowAdapter
     {
         if (messages == null)
         {
-            Entity entity = null;
-            try
-            {
-                entity = dss.get(Messages.KIND, Messages.NAME);
-            }
-            catch (EntityNotFoundException ex)
-            {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(frame, ex.getMessage());
-            }
-            messages = new Messages(entity);
+            messages = dss.getMessages();
         }
         Object obj = messages.get(name);
         if (obj != null)
