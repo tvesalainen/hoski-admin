@@ -192,7 +192,10 @@ public class Admin extends WindowAdapter
         if (privileged)
         {
             fileMenu.add(menuItemSync());
-            fileMenu.add(menuItemTextMaintenence());
+        }
+        fileMenu.add(menuItemTextMaintenence());
+        if (privileged)
+        {
             fileMenu.add(menuItemTextUpload());
 
             fileMenu.add(menuItemTextDownload());
