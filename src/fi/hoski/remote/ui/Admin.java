@@ -104,6 +104,7 @@ public class Admin extends WindowAdapter
     private List<Reservation> selectedReservations;
     private List<Reservation> unSelectedReservations;
     private boolean privileged;
+    private boolean accessUser;
     private String safeTitle;
     
     static
@@ -144,7 +145,7 @@ public class Admin extends WindowAdapter
         try
         {
             new SqlConnection(serverProperties.getProperties());
-            privileged = true;
+            accessUser = true;
         }
         catch (ClassNotFoundException | SQLException ex)
         {
@@ -189,7 +190,7 @@ public class Admin extends WindowAdapter
     {
         JMenu fileMenu = new JMenu(TextUtil.getString("FILE"));
         menuBar.add(fileMenu);
-        if (privileged)
+        if (accessUser)
         {
             fileMenu.add(menuItemSync());
         }
@@ -217,11 +218,15 @@ public class Admin extends WindowAdapter
             fileMenu.addSeparator();
             fileMenu.add(menuItemRestoreEntity());
             fileMenu.add(menuItemRestore());
+            fileMenu.add(menuItemAddYear());
+        }
+        fileMenu.addSeparator();
+        if (accessUser)
+        {
             fileMenu.add(menuItemInspectAllLightBoats());
             fileMenu.add(menuItemInspectionFix1());
             fileMenu.add(menuItemSql());
             fileMenu.add(menuItemUninspectedBoats());
-            fileMenu.add(menuItemAddYear());
         }
         fileMenu.addSeparator();
 
