@@ -690,6 +690,7 @@ public class DataStoreServiceImpl implements DataStoreService
         int changed=0;
         DateFormat df = DateFormat.getDateTimeInstance();
         Query query1 = new Query("SwapLog");
+        query1.setAncestor(Keys.getYearKey(new Day()));
         PreparedQuery pq = datastore.prepare(query1);
         for (Entity e : pq.asIterable())
         {
