@@ -107,15 +107,15 @@ public class Synchronizer2
         }
         
         // keys inserted to slave
-        Set<Key> inserted = new HashSet<Key>();
+        Set<Key> inserted = new HashSet<>();
         inserted.addAll(masterMap.keySet());       // all master keys
         inserted.removeAll(slaveMap.keySet());     // minus slave keys
         // keys deleted from slave
-        Set<Key> deleted = new HashSet<Key>();
+        Set<Key> deleted = new HashSet<>();
         deleted.addAll(slaveMap.keySet());       // all slave keys
         deleted.removeAll(masterMap.keySet());     // minus master keys
         // keys modified at slave
-        Set<Key> modified = new HashSet<Key>();
+        Set<Key> modified = new HashSet<>();
         modified.addAll(masterMap.keySet());       // all slave keys
         modified.removeAll(inserted);     // minus master keys
         assert inserted.size() + modified.size() == masterMap.size();
@@ -146,7 +146,6 @@ public class Synchronizer2
                 }
             }
         }
-        /*
         else
         {
             // in insert mode we insert also to master side
@@ -156,7 +155,6 @@ public class Synchronizer2
                 master.insert(target, slaveEntity);
             }
         }
-        */
     }
 
     private String javaType(String sqlType)

@@ -65,8 +65,8 @@ public class SyncTarget
     
     public static List<SyncTarget> create(Properties properties)
     {
-        List<SyncTarget> list = new ArrayList<SyncTarget>();
-        Map<String,SyncTarget> map = new HashMap<String,SyncTarget>();
+        List<SyncTarget> list = new ArrayList<>();
+        Map<String,SyncTarget> map = new HashMap<>();
         for (String name : getList(properties, TABLES))
         {
             SyncTarget target = new SyncTarget(name);
