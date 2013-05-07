@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author Timo Vesalainen
+ * @author Timo Vesalainen 
  */
 public class Fleet
 {
