@@ -85,7 +85,7 @@ public class Race extends Base
     {
         if (time != null)
         {
-            return Base.split(time[1])[1];
+            return SailWaveFile.split(time[1])[1];
         }
         else
         {
@@ -122,8 +122,8 @@ public class Race extends Base
     }
     public void setTime(String time)
     {
-        String[] ss = Base.split(this.time[1]);
+        String[] ss = SailWaveFile.split(this.time[1]);
         ss[1] = time;
-        this.time[1] = Base.join(ss);
+        this.time[1] = SailWaveFile.join(ss);
     }
 }

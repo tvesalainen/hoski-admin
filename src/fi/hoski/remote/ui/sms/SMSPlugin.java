@@ -17,7 +17,6 @@
 
 package fi.hoski.remote.ui.sms;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PhoneNumber;
 import fi.hoski.remote.ui.TextUtil;

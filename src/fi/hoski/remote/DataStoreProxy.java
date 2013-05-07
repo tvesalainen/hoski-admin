@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import fi.hoski.datastore.RemoteAppEngine;
+import fi.hoski.datastore.SMSNotConfiguredException;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -128,15 +129,7 @@ public class DataStoreProxy implements Runnable, InvocationHandler
                             throw new IOException(ex);
                         }
                     }
-                    catch (SQLException ex)
-                    {
-                        throw new IOException(ex);
-                    }
-                    catch (ClassNotFoundException ex)
-                    {
-                        throw new IOException(ex);
-                    }
-                    catch (EntityNotFoundException ex)
+                    catch (SMSNotConfiguredException | SQLException | ClassNotFoundException | EntityNotFoundException ex)
                     {
                         throw new IOException(ex);
                     }
@@ -146,7 +139,7 @@ public class DataStoreProxy implements Runnable, InvocationHandler
         }
         catch (IOException ex)
         {
-            Logger.getLogger(DataStoreProxy.class.getName()).log(Level.SEVERE, null, ex);
+            throw new IllegalArgumentException(ex);
         }
     }
 

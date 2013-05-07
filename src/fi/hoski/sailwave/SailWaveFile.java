@@ -18,11 +18,17 @@ package fi.hoski.sailwave;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
+import fi.hoski.datastore.repository.RaceEntry;
+import fi.hoski.datastore.repository.RaceFleet;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -31,11 +37,13 @@ import java.util.TreeMap;
 public class SailWaveFile implements Serializable
 {
     private static final long serialVersionUID = 1L;
+
     private List<String[]> list;
     private Map<Integer,Competitor> competitors = new TreeMap<>();
     private Map<Integer,Race> races = new TreeMap<>();
     private Map<Integer,Fleet> fleets = new TreeMap<>();
     private int maxCompetitor;
+    private int maxFleet;
 
     protected SailWaveFile()
     {
@@ -60,7 +68,7 @@ public class SailWaveFile implements Serializable
         String[] ar = reader.readNext();
         while (ar != null)
         {
-            list.add(ar);
+            boolean add = true;
             switch (ar[0])
             {
                 case "comphigh":
@@ -80,21 +88,6 @@ public class SailWaveFile implements Serializable
                     }
                     race.add(ar);
                     break;
-                case "scrname":
-                case "scrfield":
-                case "scrvalue":
-                case "scrpointsystem":
-                case "scrratingsystem":
-                case "scrparent":
-                    int srcNum = Integer.parseInt(ar[2]);
-                    Fleet fleet = fleets.get(srcNum);
-                    if (fleet == null)
-                    {
-                        fleet = new Fleet();
-                        fleets.put(srcNum, fleet);
-                    }
-                    fleet.add(ar);
-                    break;
                 case "compnat":
                 case "compsailno":
                 case "compclass":
@@ -107,12 +100,108 @@ public class SailWaveFile implements Serializable
                     }
                     comp.add(ar);
                     break;
+                default:
+                    if (ar[0].startsWith("scr"))
+                    {
+                        add = false;
+                        int srcNum = Fleet.getNumber(ar);
+                        maxFleet = Math.max(maxFleet, srcNum);
+                        Fleet fleet = fleets.get(srcNum);
+                        if (fleet == null)
+                        {
+                            fleet = new Fleet();
+                            fleets.put(srcNum, fleet);
+                        }
+                        fleet.add(ar);
+                    }
+                    break;
+            }
+            if (add)
+            {
+                list.add(ar);
             }
             ar = reader.readNext();
         }
         reader.close();
     }
 
+    public void deleteNotNeededFleets(List<RaceEntry> entries)
+    {
+        Set<String> names = new HashSet<>();
+        for (RaceEntry re : entries)
+        {
+            names.add(re.getFleet());
+        }
+        Fleet defaultFleet = getDefaultFleet();
+        Iterator<Entry<Integer, Fleet>> iterator = fleets.entrySet().iterator();
+        while (iterator.hasNext())
+        {
+            Entry<Integer, Fleet> next = iterator.next();
+            Fleet f = next.getValue();
+            String name = f.getValue();
+            if (!f.equals(defaultFleet) && !names.contains(name))
+            {
+                iterator.remove();
+            }
+        }
+    }
+    
+    public void updateFleets(List<RaceFleet> fleetList)
+    {
+        Map<String,RaceFleet> names = new HashMap<>();
+        for (RaceFleet rf : fleetList)
+        {
+            names.put(rf.getName(), rf);
+        }
+        Fleet defaultFleet = getDefaultFleet();
+        Iterator<Entry<Integer, Fleet>> iterator = fleets.entrySet().iterator();
+        while (iterator.hasNext())
+        {
+            Entry<Integer, Fleet> next = iterator.next();
+            Fleet f = next.getValue();
+            String name = f.getValue();
+            if (!f.equals(defaultFleet))
+            {
+                RaceFleet rf = names.get(name);
+                if (rf == null)
+                {
+                    iterator.remove();
+                }
+            }
+        }
+        for (String name : names.keySet())
+        {
+            Fleet fleet = getFleet(name);
+            if (fleet != null)
+            {
+                
+            }
+            else
+            {
+                
+            }
+        }
+    }
+    
+    public void copyFleet(Fleet fleet)
+    {
+        assert fleets.containsValue(fleet);
+        maxFleet++;
+        fleets.put(maxFleet, fleet.copy(maxFleet));
+    }
+    
+    public Fleet getFleet(String name)
+    {
+        for (Entry<Integer,Fleet> entry : fleets.entrySet())
+        {
+            Fleet fleet = entry.getValue();
+            if (name.equals(fleet.getValue()))
+            {
+                return fleet;
+            }
+        }
+        return null;
+    }
     public Fleet getDefaultFleet()
     {
         for (Entry<Integer,Fleet> entry : fleets.entrySet())
@@ -263,6 +352,10 @@ public class SailWaveFile implements Serializable
         OutputStreamWriter osw = new OutputStreamWriter(bos, "ISO-8859-1");
         CSVWriter writer = new CSVWriter(osw, ',', '"', "\r\n");
         writer.writeAll(list);
+        for (Fleet fleet : fleets.values())
+        {
+            fleet.write(writer);
+        }
         for (Competitor competitor : competitors.values())
         {
             competitor.write(writer);
@@ -276,11 +369,11 @@ public class SailWaveFile implements Serializable
     {
         try
         {
-            File f1 = new File("C:\\Users\\tkv\\Documents\\Sailing\\SailWave\\S1.blw");
-            File f2 = new File("C:\\Users\\tkv\\Documents\\Sailing\\SailWave\\S7.blw");
+            File f1 = new File("C:\\Users\\tkv\\Documents\\Helsinki RegattaVikla.blw");
             SailWaveFile swf = new SailWaveFile(f1);
-            Competitor ariel = new Competitor();
-            swf.addCompetitor(ariel);
+            Fleet defaultFleet = swf.getDefaultFleet();
+            swf.copyFleet(defaultFleet);
+            File f2 = new File("C:\\Users\\tkv\\Documents\\Helsinki RegattaVikla2.blw");
             swf.saveAs(f2);
         }
         catch (Exception ex)
@@ -293,6 +386,44 @@ public class SailWaveFile implements Serializable
     {
         set("sereventeid", String.valueOf(id));
     }
+    public static String join(String... cols)
+    {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (String s : cols)
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                sb.append('|');
+            }
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    public static String[] split(String str)
+    {
+        int begin = 0;
+        int end = str.indexOf('|');
+        if (end == -1)
+        {
+            return new String[]{str};
+        }
+        List<String> list = new ArrayList<String>();
+        while (end != -1)
+        {
+            list.add(str.substring(begin, end));
+            begin = end + 1;
+            end = str.indexOf('|', begin);
+        }
+        list.add(str.substring(begin));
+        return list.toArray(new String[list.size()]);
+    }
+
     private class EuroInputStream extends InputStream
     {
         private InputStream in;

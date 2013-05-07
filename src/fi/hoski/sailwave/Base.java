@@ -49,51 +49,14 @@ public class Base
             writer.writeNext(ar);
         }
     }
-    
-    public static String[] split(String str)
-    {
-        int begin = 0;
-        int end = str.indexOf('|');
-        if (end == -1)
-        {
-            return new String[] {str};
-        }
-        List<String> list = new ArrayList<String>();
-        while (end != -1)
-        {
-            list.add(str.substring(begin, end));
-            begin = end+1;
-            end = str.indexOf('|', begin);
-        }
-        list.add(str.substring(begin));
-        return list.toArray(new String[list.size()]);
-    }
-    public static String join(String... cols)
-    {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for (String s : cols)
-        {
-            if (first)
-            {
-                first = false;
-            }
-            else
-            {
-                sb.append('|');
-            }
-            sb.append(s);
-        }
-        return sb.toString();
-    }
     public static void main(String[] args) 
     {
         try
         {
             //String s1 = "|11:00:00|Place|Start 1|||0||0|0||||1";
             String s1 = "1|CarriedFwd|386|No|No|20||";
-            String[] ss = Base.split(s1);
-            String s2 = Base.join(ss);
+            String[] ss = SailWaveFile.split(s1);
+            String s2 = SailWaveFile.join(ss);
             if (!s1.equals(s2))
             {
                 System.err.println(s1+" != "+s2);

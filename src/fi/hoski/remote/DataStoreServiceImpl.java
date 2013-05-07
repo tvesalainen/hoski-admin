@@ -60,7 +60,7 @@ public class DataStoreServiceImpl implements DataStoreService
     private Races races;
     private boolean supportsZonerSMS;
 
-    public DataStoreServiceImpl(Properties properties, DatastoreService datastore) throws EntityNotFoundException, SQLException, ClassNotFoundException
+    public DataStoreServiceImpl(Properties properties, DatastoreService datastore) throws EntityNotFoundException, SQLException, ClassNotFoundException, SMSNotConfiguredException
     {
         this.properties = properties;
         this.datastore = datastore;

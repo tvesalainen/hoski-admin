@@ -3028,6 +3028,7 @@ public class Admin extends WindowAdapter
                     firstRace.setTime(time.toString());
                 }
             }
+            swf.updateFleets(fleetList);
             swf.saveAs(file);
             rs.set(RaceSeries.SAILWAVEFILE, swf.getBytes());
             while (true)
@@ -3066,6 +3067,8 @@ public class Admin extends WindowAdapter
         RaceSeries raceSeries = chooseRace();
         if (raceSeries != null)
         {
+            Blob swb = (Blob) raceSeries.get(RaceSeries.SAILWAVEFILE);
+            SailWaveFile swf = new SailWaveFile(swb.getBytes());
             List<RaceFleet> fleetList = dss.getFleets(raceSeries);
             DataObjectModel model = RaceSeries.MODEL.hide(
                     RaceSeries.ID,
@@ -3077,6 +3080,15 @@ public class Admin extends WindowAdapter
             rd.setEditable(listModel.getProperties());
             if (rd.edit())
             {
+                swf.setEvent((String) raceSeries.get(RaceSeries.EVENT));
+                swf.setVenue((String) raceSeries.get(RaceSeries.RACE_AREA));
+                Text notes = (Text) raceSeries.get(RaceSeries.NOTES);
+                if (notes != null)
+                {
+                    swf.setNotes(notes.getValue());
+                }
+                swf.updateFleets(fleetList);
+                raceSeries.set(RaceSeries.SAILWAVEFILE, swf.getBytes());
                 dss.putRace(raceSeries, fleetList);
             }
         }
@@ -3123,8 +3135,8 @@ public class Admin extends WindowAdapter
             return;
         }
         String ratingSystem = fleets.get(0).getScrratingsystem();
-        List<RaceFleet> startList = new ArrayList<RaceFleet>();
-        Map<RaceFleet, Race> startMap = new HashMap<RaceFleet, Race>();
+        List<RaceFleet> startList = new ArrayList<>();
+        Map<RaceFleet, Race> startMap = new HashMap<>();
         for (Race start : swf.getRaces())
         {
             RaceFleet st = new RaceFleet(rs);
@@ -3303,6 +3315,7 @@ public class Admin extends WindowAdapter
             competitor.setAll(checkRating(entry.getAll()));
             swf.addCompetitor(competitor);
         }
+        swf.deleteNotNeededFleets(entryList);
         File selectedFile = saveFile(SAILWAVEDIR, swf.getEvent() + ".blw", ".blw", "SailWave");
         if (selectedFile != null)
         {

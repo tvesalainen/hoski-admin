@@ -16,7 +16,9 @@
 */
 package fi.hoski.sailwave;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,13 +43,14 @@ public class Fleet
         SCRPARENT
     };
     
-    private List<String[]> list = new ArrayList<String[]>();
+    private List<String[]> list = new ArrayList<>();
     private String scrratingsystem;
     private int parent;
     private String name;
     private String pointssystem;
     private String field;
     private String value;
+    private int number = -1;
 
     public static boolean accept(String field)
     {
@@ -113,8 +116,50 @@ public class Fleet
             return "";
         }
     }
+    public static int getNumber(String[] ar)
+    {
+        if ("scrcode".equals(ar[0]))
+        {
+            String[] ss = SailWaveFile.split(ar[1]);
+            return Integer.parseInt(ss[14]);
+        }
+        else
+        {
+            return Integer.parseInt(ar[2]);
+        }
+    }
+
+    public int getNumber()
+    {
+        return number;
+    }
+    
+    public Fleet copy(int newNumber)
+    {
+        String n = String.valueOf(newNumber);
+        Fleet nf = new Fleet();
+        for (String[] ar : list)
+        {
+            String[] car = Arrays.copyOf(ar, ar.length);
+            if ("scrcode".equals(ar[0]))
+            {
+                String[] ss = SailWaveFile.split(ar[1]);
+                ss[14] = n;
+                car[1] = SailWaveFile.join(ss);
+            }
+            else
+            {
+                car[2] = n;
+            }
+            nf.add(car);
+        }
+        return nf;
+    }
     public void add(String[] ar)
     {
+        int n = getNumber(ar);
+        assert number == -1 || number == n;
+        number = n;
         list.add(ar);
         if (SCRNAME.equals(ar[0]))
         {
@@ -142,4 +187,12 @@ public class Fleet
         }
     }
 
+    public void write(CSVWriter writer)
+    {
+        for (String[]  ar : list)
+        {
+            writer.writeNext(ar);
+        }
+    }
+    
 }
