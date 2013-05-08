@@ -194,5 +194,10 @@ public class Fleet
             writer.writeNext(ar);
         }
     }
+
+    void setName(String clazz)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

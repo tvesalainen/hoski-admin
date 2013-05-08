@@ -172,14 +172,13 @@ public class SailWaveFile implements Serializable
         for (String name : names.keySet())
         {
             Fleet fleet = getFleet(name);
-            if (fleet != null)
+            if (fleet == null)
             {
-                
+                fleet = new Fleet();
             }
-            else
-            {
-                
-            }
+            RaceFleet rf = names.get(name);
+            fleet.setName(rf.getClazz());
+            fleet.
         }
     }
     
