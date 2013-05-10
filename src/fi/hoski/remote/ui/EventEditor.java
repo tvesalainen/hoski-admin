@@ -68,7 +68,7 @@ public class EventEditor implements ActionListener, DataObjectObserver
         if (type == null)
         {
             // editing not creating
-            JComponent comp = componentMap.get(Event.EVENTDATE);
+            JComponent comp = componentMap.get(Event.EventDate);
             comp.setEnabled(false);
         }
         if (et.edit())
@@ -92,15 +92,15 @@ public class EventEditor implements ActionListener, DataObjectObserver
         {
             ComponentAccessor.set(component, newValue);
         }
-        if (Event.EVENTDATE.equals(property))
+        if (Event.EventDate.equals(property))
         {
-            Day closing = (Day) dataObject.get(Event.CLOSINGDATE);
+            Day closing = (Day) dataObject.get(Event.ClosingDate);
             if (closing == null)
             {
                 Day date = (Day) newValue;
                 closing = new Day(date);
                 closing.addDays(-6);
-                dataObject.set(Event.CLOSINGDATE, closing);
+                dataObject.set(Event.ClosingDate, closing);
             }
         }
     }

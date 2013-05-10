@@ -821,4 +821,10 @@ public class DataStoreServiceImpl implements DataStoreService
         entities.addYear(year);
     }
 
+    @Override
+    public int getNumberOfRaceEntriesFor(DataObject race) throws EntityNotFoundException
+    {
+        return races.getNumberOfRaceEntriesFor(race);
+    }
+
 }

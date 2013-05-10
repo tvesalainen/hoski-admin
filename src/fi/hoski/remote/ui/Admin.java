@@ -408,7 +408,7 @@ public class Admin extends WindowAdapter
                         {
                             Event event = selected.get(0);
                             List<Reservation> reservationList = dss.getReservations(event);
-                            Day date = (Day) event.get(Event.EVENTDATE);
+                            Day date = (Day) event.get(Event.EventDate);
                             String subject = TextUtil.getString(eventType.name()) + " " + date;
                             String body = getMessage(eventType.name());
                             MailDialog md = new MailDialog(frame, subject, body, reservationList);
@@ -1945,7 +1945,7 @@ public class Admin extends WindowAdapter
         final Event event = chooseEvent(eventType, "CHOOSE");
         if (event != null)
         {
-            final String eventTitle = TextUtil.getString(event.getEventType().name()) + " " + event.get(Event.EVENTDATE);
+            final String eventTitle = TextUtil.getString(event.getEventType().name()) + " " + event.get(Event.EventDate);
             safeTitle = frame.getTitle();
             frame.setTitle(eventTitle);
             reservationList = dss.getReservations(event);
@@ -2983,28 +2983,29 @@ public class Admin extends WindowAdapter
         rs.set(RaceSeries.NOTES, swf.getNotes());
         if (firstRace != null)
         {
-            rs.set(RaceSeries.EVENTDATE, firstRace.getDate());
+            rs.set(RaceSeries.EventDate, firstRace.getDate());
             rs.set(RaceSeries.STARTTIME, firstRace.getTime());
         }
-        List<RaceFleet> fleetList = new ArrayList<RaceFleet>();
+        List<RaceFleet> fleetList = new ArrayList<>();
         for (Fleet fleet : swf.getFleets())
         {
             RaceFleet rc = new RaceFleet(rs);
-            rc.set(RaceFleet.FLEET, fleet.getValue());
-            rc.set(RaceFleet.CLASS, fleet.getClassname());
-            rc.set(RaceFleet.RATINGSYSTEM, fleet.getScrratingsystem());
+            rc.set(RaceFleet.Fleet, fleet.getFleet());
+            rc.set(RaceFleet.Class, fleet.getClassname());
+            rc.set(RaceFleet.RatingSystem, fleet.getRatingSystem());
+            rc.set(RaceFleet.SailWaveId, fleet.getNumber());
             if (firstRace != null)
             {
-                rc.set(RaceFleet.EVENTDATE, firstRace.getDate());
-                rc.set(RaceFleet.STARTTIME, firstRace.getTime());
+                rc.set(RaceFleet.EventDate, firstRace.getDate());
+                rc.set(RaceFleet.StartTime, firstRace.getTime());
             }
             fleetList.add(rc);
         }
         DataObjectModel model = RaceSeries.MODEL.hide(
                 RaceSeries.ID,
                 RaceSeries.SAILWAVEFILE);
-        DataObjectModel listModel = RaceFleet.MODEL.hide(RaceFleet.RATINGSYSTEM, RaceFleet.CLOSINGDATE, RaceFleet.CLOSINGDATE2, RaceFleet.RANKING);
-        RaceDialog rc = new RaceDialog(frame, swf.getEvent(), model, rs, listModel, fleetList);
+        DataObjectModel listModel = RaceFleet.Model.hide(RaceFleet.RatingSystem, RaceFleet.ClosingDate, RaceFleet.ClosingDate2, RaceFleet.Ranking, RaceFleet.SailWaveId);
+        RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, fleetList, swf);
         rc.setEditable(listModel.getProperties());
         if (rc.edit())
         {
@@ -3017,7 +3018,7 @@ public class Admin extends WindowAdapter
             }
             if (firstRace != null)
             {
-                Day date = (Day) rs.get(RaceSeries.EVENTDATE);
+                Day date = (Day) rs.get(RaceSeries.EventDate);
                 if (date != null)
                 {
                     firstRace.setDate(date.toString());
@@ -3072,11 +3073,11 @@ public class Admin extends WindowAdapter
             List<RaceFleet> fleetList = dss.getFleets(raceSeries);
             DataObjectModel model = RaceSeries.MODEL.hide(
                     RaceSeries.ID,
-                    RaceSeries.EVENTDATE,
+                    RaceSeries.EventDate,
                     RaceSeries.SAILWAVEFILE);
             String event = (String) raceSeries.get(RaceSeries.EVENT);
-            DataObjectModel listModel = RaceFleet.MODEL.hide(RaceFleet.RATINGSYSTEM, RaceFleet.CLOSINGDATE, RaceFleet.RANKING);
-            RaceDialog rd = new RaceDialog(frame, event, model, raceSeries, listModel, fleetList);
+            DataObjectModel listModel = RaceFleet.Model.hide(RaceFleet.RatingSystem, RaceFleet.ClosingDate, RaceFleet.Ranking, RaceFleet.SailWaveId);
+            RaceDialog rd = new RaceDialog(frame, event, dss, model, raceSeries, listModel, fleetList, swf);
             rd.setEditable(listModel.getProperties());
             if (rd.edit())
             {
@@ -3134,14 +3135,14 @@ public class Admin extends WindowAdapter
             JOptionPane.showMessageDialog(frame, TextUtil.getString("SAILWAVEFILE PROBLEM"));
             return;
         }
-        String ratingSystem = fleets.get(0).getScrratingsystem();
+        String ratingSystem = fleets.get(0).getRatingSystem();
         List<RaceFleet> startList = new ArrayList<>();
         Map<RaceFleet, Race> startMap = new HashMap<>();
         for (Race start : swf.getRaces())
         {
             RaceFleet st = new RaceFleet(rs);
-            st.set(RaceFleet.RANKING, true);
-            st.set(RaceFleet.FLEET, defFleet.getScrratingsystem());
+            st.set(RaceFleet.Ranking, true);
+            st.set(RaceFleet.Fleet, defFleet.getRatingSystem());
             startMap.put(st, start);
             String startDate = start.getDate();
             String startTime = start.getTime();
@@ -3153,26 +3154,26 @@ public class Admin extends WindowAdapter
             if (startDate != null && !startDate.isEmpty())
             {
                 Day sd = new Day(startDate);
-                st.set(RaceFleet.EVENTDATE, sd);
-                st.set(RaceFleet.CLOSINGDATE, sd);
+                st.set(RaceFleet.EventDate, sd);
+                st.set(RaceFleet.ClosingDate, sd);
             }
             if (startTime != null && !startTime.isEmpty())
             {
-                st.set(RaceFleet.STARTTIME, new Time(startTime));
+                st.set(RaceFleet.StartTime, new Time(startTime));
             }
-            st.set(RaceFleet.RATINGSYSTEM, ratingSystem);
+            st.set(RaceFleet.RatingSystem, ratingSystem);
             startList.add(st);
         }
         DataObjectModel model = RaceSeries.MODEL.hide(
                 RaceSeries.ID,
-                RaceSeries.EVENTDATE,
+                RaceSeries.EventDate,
                 RaceSeries.TO,
-                RaceSeries.CLOSINGDATE,
+                RaceSeries.ClosingDate,
                 RaceSeries.STARTTIME,
                 RaceSeries.SAILWAVEFILE);
-        DataObjectModel listModel = RaceFleet.MODEL.hide(RaceFleet.RANKING);
-        RaceDialog rc = new RaceDialog(frame, swf.getEvent(), model, rs, listModel, startList);
-        rc.setEditable(RaceFleet.EVENTDATE, RaceFleet.STARTTIME, RaceFleet.CLOSINGDATE);
+        DataObjectModel listModel = RaceFleet.Model.hide(RaceFleet.Ranking, RaceFleet.SailWaveId);
+        RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, startList, swf);
+        rc.setEditable(RaceFleet.EventDate, RaceFleet.StartTime, RaceFleet.ClosingDate);
         if (rc.edit())
         {
             Day from = null;
@@ -3181,11 +3182,11 @@ public class Admin extends WindowAdapter
             {
                 if (from == null)
                 {
-                    from = (Day) start.get(RaceFleet.EVENTDATE);
+                    from = (Day) start.get(RaceFleet.EventDate);
                 }
                 else
                 {
-                    Day d = (Day) start.get(RaceFleet.EVENTDATE);
+                    Day d = (Day) start.get(RaceFleet.EventDate);
                     if (from.after(d))
                     {
                         from = d;
@@ -3193,21 +3194,21 @@ public class Admin extends WindowAdapter
                 }
                 if (to == null)
                 {
-                    to = (Day) start.get(RaceFleet.EVENTDATE);
+                    to = (Day) start.get(RaceFleet.EventDate);
                 }
                 else
                 {
-                    Day d = (Day) start.get(RaceFleet.EVENTDATE);
+                    Day d = (Day) start.get(RaceFleet.EventDate);
                     if (to.before(d))
                     {
                         to = d;
                     }
                 }
                 Race r = startMap.get(start);
-                r.setDate(start.get(RaceFleet.EVENTDATE).toString());
-                r.setTime(start.get(RaceFleet.STARTTIME).toString());
+                r.setDate(start.get(RaceFleet.EventDate).toString());
+                r.setTime(start.get(RaceFleet.StartTime).toString());
             }
-            rs.set(RaceSeries.EVENTDATE, from);
+            rs.set(RaceSeries.EventDate, from);
             rs.set(RaceSeries.TO, to);
             swf.setEvent((String) rs.get(RaceSeries.EVENT));
             swf.setVenue((String) rs.get(RaceSeries.RACE_AREA));

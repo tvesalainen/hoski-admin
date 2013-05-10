@@ -138,7 +138,7 @@ public class SailWaveFile implements Serializable
         {
             Entry<Integer, Fleet> next = iterator.next();
             Fleet f = next.getValue();
-            String name = f.getValue();
+            String name = f.getFleet();
             if (!f.equals(defaultFleet) && !names.contains(name))
             {
                 iterator.remove();
@@ -148,10 +148,10 @@ public class SailWaveFile implements Serializable
     
     public void updateFleets(List<RaceFleet> fleetList)
     {
-        Map<String,RaceFleet> names = new HashMap<>();
+        Map<Integer,RaceFleet> names = new HashMap<>();
         for (RaceFleet rf : fleetList)
         {
-            names.put(rf.getName(), rf);
+            names.put(rf.getSailWaveId(), rf);
         }
         Fleet defaultFleet = getDefaultFleet();
         Iterator<Entry<Integer, Fleet>> iterator = fleets.entrySet().iterator();
@@ -159,34 +159,37 @@ public class SailWaveFile implements Serializable
         {
             Entry<Integer, Fleet> next = iterator.next();
             Fleet f = next.getValue();
-            String name = f.getValue();
+            int id = f.getNumber();
             if (!f.equals(defaultFleet))
             {
-                RaceFleet rf = names.get(name);
+                RaceFleet rf = names.get(id);
                 if (rf == null)
                 {
                     iterator.remove();
                 }
             }
         }
-        for (String name : names.keySet())
+        for (Integer id : names.keySet())
         {
-            Fleet fleet = getFleet(name);
-            if (fleet == null)
-            {
-                fleet = new Fleet();
-            }
-            RaceFleet rf = names.get(name);
-            fleet.setName(rf.getClazz());
-            fleet.
+            RaceFleet rf = names.get(id);
+            Fleet fleet = getFleet(id);
+            fleet.setFleet(rf.getFleet());
+            fleet.setRatingSystem(rf.getRatingSystem());
         }
     }
     
-    public void copyFleet(Fleet fleet)
+    public Fleet copyFleet(Fleet fleet)
     {
         assert fleets.containsValue(fleet);
         maxFleet++;
-        fleets.put(maxFleet, fleet.copy(maxFleet));
+        Fleet copy = fleet.copy(maxFleet);
+        fleets.put(maxFleet, copy);
+        return copy;
+    }
+    
+    public Fleet getFleet(int number)
+    {
+        return fleets.get(number);
     }
     
     public Fleet getFleet(String name)
@@ -194,7 +197,7 @@ public class SailWaveFile implements Serializable
         for (Entry<Integer,Fleet> entry : fleets.entrySet())
         {
             Fleet fleet = entry.getValue();
-            if (name.equals(fleet.getValue()))
+            if (name.equals(fleet.getFleet()))
             {
                 return fleet;
             }

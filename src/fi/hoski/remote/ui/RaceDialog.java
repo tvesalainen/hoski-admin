@@ -17,11 +17,15 @@
 
 package fi.hoski.remote.ui;
 
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import fi.hoski.datastore.repository.DataObject;
 import fi.hoski.datastore.repository.DataObjectModel;
 import fi.hoski.datastore.repository.DataObjectObserver;
 import fi.hoski.datastore.repository.RaceFleet;
 import fi.hoski.datastore.repository.RaceSeries;
+import fi.hoski.remote.DataStoreService;
+import fi.hoski.sailwave.Fleet;
+import fi.hoski.sailwave.SailWaveFile;
 import fi.hoski.util.Day;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
@@ -31,6 +35,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 
@@ -41,6 +47,7 @@ public class RaceDialog extends JDialog implements DataObjectObserver
 {
     public static final ResourceBundle uiBundle = ResourceBundle.getBundle("fi/hoski/remote/ui/ui");
     
+    private DataStoreService dss;
     private RaceSeries raceSeries;
     private List<RaceFleet> raceFleetList;
     private Map<String, JComponent> componentMap;
@@ -51,18 +58,21 @@ public class RaceDialog extends JDialog implements DataObjectObserver
     RaceDialog(
             JFrame frame, 
             String event, 
+            final DataStoreService dss, 
             final DataObjectModel model, 
             final RaceSeries raceSeries,
             final DataObjectModel listModel, 
-            final List<RaceFleet> raceFleetList
+            final List<RaceFleet> raceFleetList,
+            final SailWaveFile swf
             )
     {
         super(frame, event);
+        this.dss = dss;
         this.raceSeries = raceSeries;
         this.raceFleetList = raceFleetList;
         componentMap = DialogUtil.createEditPane(this, model, raceSeries, BorderLayout.NORTH);
         
-        etm = new DataObjectListTableModel<RaceFleet>(listModel, raceFleetList);
+        etm = new DataObjectListTableModel<>(listModel, raceFleetList);
         table = new FitTable(etm);
         TableSelectionHandler tsh = new TableSelectionHandler(table);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -109,6 +119,7 @@ public class RaceDialog extends JDialog implements DataObjectObserver
         };
         ok.addActionListener(okAction);
         panel.add(ok);
+        
         JButton cancel = new JButton(uiBundle.getString("CANCEL"));
         ActionListener cancelAction = new ActionListener()
         {
@@ -120,6 +131,66 @@ public class RaceDialog extends JDialog implements DataObjectObserver
         };
         cancel.addActionListener(cancelAction);
         panel.add(cancel);
+
+        JButton addFleet = new JButton(uiBundle.getString("ADD FLEET"));
+        ActionListener addFleetAction = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                int row = table.getSelectedRow();
+                if (row != -1)
+                {
+                    TableCellEditor cellEditor = table.getCellEditor();
+                    if (cellEditor != null)
+                    {
+                        cellEditor.stopCellEditing();
+                    }
+                    RaceFleet rf = etm.getObject(row);
+                    int swid = rf.getSailWaveId();
+                    Fleet fleet = swf.getFleet(swid);
+                    Fleet copyFleet = swf.copyFleet(fleet);
+                    etm.add(rf.makeCopy(copyFleet.getNumber()));
+                }
+            }
+        };
+        addFleet.addActionListener(addFleetAction);
+        panel.add(addFleet);
+
+        JButton deleteFleet = new JButton(uiBundle.getString("DELETE FLEET"));
+        ActionListener deleteFleetAction = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                int row = table.getSelectedRow();
+                if (row != -1)
+                {
+                    TableCellEditor cellEditor = table.getCellEditor();
+                    if (cellEditor != null)
+                    {
+                        cellEditor.stopCellEditing();
+                    }
+                    RaceFleet rf = etm.getObject(row);
+                    try
+                    {
+                        int numberOfRaceEntriesFor = dss.getNumberOfRaceEntriesFor(rf);
+                        if (numberOfRaceEntriesFor > 0)
+                        {
+                            JOptionPane.showMessageDialog(rootPane, uiBundle.getString("FLEET HAS ENTRIES"), uiBundle.getString("UNABLE TO DELETE"), JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    }
+                    catch (EntityNotFoundException ex)
+                    {
+                        throw new IllegalArgumentException(ex);
+                    }
+                    etm.remove(rf);
+                }
+            }
+        };
+        deleteFleet.addActionListener(deleteFleetAction);
+        panel.add(deleteFleet);
 
         setLocationByPlatform(true);
         setModalityType(Dialog.ModalityType.TOOLKIT_MODAL);
@@ -141,11 +212,11 @@ public class RaceDialog extends JDialog implements DataObjectObserver
         {
             for (RaceFleet fleet : raceFleetList)
             {
-                Boolean ranking = (Boolean) fleet.get(RaceFleet.RANKING);
-                Day eventDay = (Day) fleet.get(RaceFleet.EVENTDATE);
+                Boolean ranking = (Boolean) fleet.get(RaceFleet.Ranking);
+                Day eventDay = (Day) fleet.get(RaceFleet.EventDate);
                 if (ranking != null && ranking)
                 {
-                    fleet.set(RaceFleet.CLOSINGDATE, eventDay);
+                    fleet.set(RaceFleet.ClosingDate, eventDay);
                 }
             }
         }
@@ -164,7 +235,7 @@ public class RaceDialog extends JDialog implements DataObjectObserver
         {
             ComponentAccessor.set(component, newValue);
         }
-        if (RaceSeries.EVENTDATE.equals(property))
+        if (RaceSeries.EventDate.equals(property))
         {
             dataObject.set(RaceSeries.TO, newValue);
             for (RaceFleet fleet : raceFleetList)
@@ -174,13 +245,13 @@ public class RaceDialog extends JDialog implements DataObjectObserver
         }
         if (RaceSeries.TO.equals(property))
         {
-            dataObject.set(RaceSeries.CLOSINGDATE, newValue);
+            dataObject.set(RaceSeries.ClosingDate, newValue);
         }
-        if (RaceSeries.CLOSINGDATE.equals(property))
+        if (RaceSeries.ClosingDate.equals(property))
         {
             for (RaceFleet fleet : raceFleetList)
             {
-                Boolean ranking = (Boolean) fleet.get(RaceFleet.RANKING);
+                Boolean ranking = (Boolean) fleet.get(RaceFleet.Ranking);
                 if (ranking == null || !ranking)
                 {
                     fleet.set(property, newValue);
@@ -191,7 +262,7 @@ public class RaceDialog extends JDialog implements DataObjectObserver
         {
             for (RaceFleet fleet : raceFleetList)
             {
-                Boolean ranking = (Boolean) fleet.get(RaceFleet.RANKING);
+                Boolean ranking = (Boolean) fleet.get(RaceFleet.Ranking);
                 if (ranking == null || !ranking)
                 {
                     fleet.set(property, newValue);

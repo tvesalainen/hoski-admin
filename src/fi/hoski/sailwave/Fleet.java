@@ -27,45 +27,19 @@ import java.util.List;
 public class Fleet
 {
 
-    public static final String SCRNAME = "scrname";
-    public static final String SCRFIELD = "scrfield";
-    public static final String SCRVALUE = "scrvalue";
-    public static final String SCRPOINTSYSTEM = "scrpointsystem";
-    public static final String SCRRATINGSYSTEM = "scrratingsystem";
-    public static final String SCRPARENT = "scrparent";
-    private static final String[] FIELDS = new String[]
-    {
-        SCRNAME,
-        SCRFIELD,
-        SCRVALUE,
-        SCRPOINTSYSTEM,
-        SCRRATINGSYSTEM,
-        SCRPARENT
-    };
+    public static final String ScrName = "scrname";
+    public static final String ScrField = "scrfield";
+    public static final String ScrValue = "scrvalue";
+    public static final String ScrPointSystem = "scrpointsystem";
+    public static final String ScrRatingSystem = "scrratingsystem";
+    public static final String ScrParent = "scrparent";
     
     private List<String[]> list = new ArrayList<>();
-    private String scrratingsystem;
-    private int parent;
-    private String name;
-    private String pointssystem;
-    private String field;
-    private String value;
     private int number = -1;
 
-    public static boolean accept(String field)
+    private String getField()
     {
-        for (String f : FIELDS)
-        {
-            if (f.equals(field))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    public String getField()
-    {
-        return field;
+        return get(ScrField);
     }
 
     public List<String[]> getList()
@@ -73,43 +47,56 @@ public class Fleet
         return list;
     }
 
-    public String getName()
-    {
-        return name;
-    }
-
     public int getParent()
     {
-        return parent;
+        String p = get(ScrParent);
+        if (p != null)
+        {
+            return Integer.parseInt(p);
+        }
+        return -1;
     }
 
-    public String getPointssystem()
+    public String getPointsSystem()
     {
-        return pointssystem;
+        return get(ScrPointSystem);
     }
 
-    public String getScrratingsystem()
+    public void setPointSystem(String value)
     {
-        return scrratingsystem;
+        set(ScrPointSystem, value);
+    }
+    public String getRatingSystem()
+    {
+        return get(ScrRatingSystem);
+    }
+    public void setRatingSystem(String value)
+    {
+        set(ScrRatingSystem, value);
     }
 
-    public String getValue()
+    public String getFleet()
     {
+        String value = get(ScrValue);
         if (value != null)
         {
             return value;
         }
         else
         {
-            return scrratingsystem;
+            return getRatingSystem();
         }
     }
-    
+    public void setFleet(String value)
+    {
+        set(ScrValue, value);
+    }
     public String getClassname()
     {
+        String field = getField();
         if ("Class".equals(field))
         {
-            return value;
+            return get(ScrValue);
         }
         else
         {
@@ -161,32 +148,31 @@ public class Fleet
         assert number == -1 || number == n;
         number = n;
         list.add(ar);
-        if (SCRNAME.equals(ar[0]))
-        {
-            name = ar[1];
-        }
-        if (SCRFIELD.equals(ar[0]))
-        {
-            field = ar[1];
-        }
-        if (SCRVALUE.equals(ar[0]))
-        {
-            value = ar[1];
-        }
-        if (SCRPOINTSYSTEM.equals(ar[0]))
-        {
-            pointssystem = ar[1];
-        }
-        if (SCRRATINGSYSTEM.equals(ar[0]))
-        {
-            scrratingsystem = ar[1];
-        }
-        if (SCRPARENT.equals(ar[0]))
-        {
-            parent = Integer.parseInt(ar[1]);
-        }
     }
 
+    private String get(String field)
+    {
+        for (String[] ar : list)
+        {
+            if (field.equals(ar[0]))
+            {
+                return ar[1];
+            }
+        }
+        return null;
+    }
+    private void set(String field, String value)
+    {
+        for (String[] ar : list)
+        {
+            if (field.equals(ar[0]))
+            {
+                ar[1] = value;
+                return;
+            }
+        }
+        list.add(new String[]{field, value, String.valueOf(number)});
+    }
     public void write(CSVWriter writer)
     {
         for (String[]  ar : list)
@@ -195,9 +181,4 @@ public class Fleet
         }
     }
 
-    void setName(String clazz)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

@@ -48,7 +48,7 @@ public class Fixer2
     {
         try
         {
-            RemoteAppEngine.init("helsinkiregatta.appspot.com", "timo.vesalainen@gmail.com", "secret");
+            RemoteAppEngine.init("helsinkiregatta.appspot.com", "timo.vesalainen@gmail.com", "secret password");
             RemoteAppEngine rae = new RemoteAppEngine()
             {
 
