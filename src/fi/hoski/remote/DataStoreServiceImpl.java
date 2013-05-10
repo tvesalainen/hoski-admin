@@ -247,15 +247,9 @@ public class DataStoreServiceImpl implements DataStoreService
     }
 
     @Override
-    public List<Entity> getChilds(Key parent)
+    public List<Entity> getChilds(Key parent, String... kinds)
     {
-        return entities.getChilds(parent);
-    }
-
-    @Override
-    public List<Entity> getChilds(Key parent, String kind)
-    {
-        return entities.getChilds(parent, kind);
+        return entities.getChilds(parent, kinds);
     }
 
     @Override
@@ -804,9 +798,9 @@ public class DataStoreServiceImpl implements DataStoreService
     }
 
     @Override
-    public void deleteWithChilds(DataObject dataObject)
+    public void deleteWithChilds(DataObject dataObject, String... kinds)
     {
-        entities.deleteWithChilds(dataObject);
+        entities.deleteWithChilds(dataObject, kinds);
     }
 
     @Override
