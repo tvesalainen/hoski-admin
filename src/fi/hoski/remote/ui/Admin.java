@@ -1162,10 +1162,13 @@ public class Admin extends WindowAdapter
     {
         DataObject raceSeriesOrFleet = chooseRaceSeriesOrFleet();
         File file = openFile(RACEATTACHDIR, null, null);
-        String title = JOptionPane.showInputDialog(frame, TextUtil.getString("TITLE"), TextUtil.getString(type.name()));
-        if (title != null)
+        if (file != null)
         {
-            dss.upload(raceSeriesOrFleet, type, title, file);
+            String title = JOptionPane.showInputDialog(frame, TextUtil.getString("TITLE"), TextUtil.getString(type.name()));
+            if (title != null)
+            {
+                dss.upload(raceSeriesOrFleet, type, title, file);
+            }
         }
     }
 
@@ -1278,6 +1281,7 @@ public class Admin extends WindowAdapter
                 }
                 catch (IllegalArgumentException ex)
                 {
+                    JOptionPane.showMessageDialog(frame, ex);
                 }
             }
             int rn = Integer.parseInt(reference.substring(0, reference.length() - 1));
@@ -3105,7 +3109,23 @@ public class Admin extends WindowAdapter
                     panel,
                     TextUtil.getString("CONFIRM DELETE")) == JOptionPane.YES_OPTION)
             {
-                dss.deleteWithChilds(raceSeries);
+                int numberOfRaceEntriesFor = dss.getNumberOfRaceEntriesFor(raceSeries);
+                if (numberOfRaceEntriesFor > 0)
+                {
+                    if (JOptionPane.showConfirmDialog(
+                            panel,
+                            TextUtil.getString("CONFIRM WHOLE RACE DELETE"),
+                            TextUtil.getString("FLEET HAS ENTRIES"),
+                            JOptionPane.WARNING_MESSAGE
+                            ) == JOptionPane.YES_OPTION)
+                    {
+                        dss.deleteWithChilds(raceSeries, "RaceFleet");
+                    }
+                }
+                else
+                {
+                    dss.deleteWithChilds(raceSeries, "RaceFleet");
+                }
             }
         }
     }
@@ -3292,7 +3312,7 @@ public class Admin extends WindowAdapter
         List<Attachment> attachments = dss.getAttachmentsFor(parent);
         // choose one of the shifts
         DataObjectChooser<Attachment> ec = new DataObjectChooser<Attachment>(
-                Attachment.MODEL.view(Attachment.TITLE),
+                Attachment.MODEL.view(Attachment.TITLE, Attachment.Filename),
                 attachments,
                 TextUtil.getString("ATTACHMENTS"),
                 "CHOOSE");
