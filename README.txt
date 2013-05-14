@@ -2,20 +2,10 @@
 Runtime installation
 ====================
 
-Launch the application with Java Web Start from 
+Download intallation zip-file from 
+https://hsk-members.appspot.com/RaceAdmin.zip
 
-https://hsk-members.appspot.com/launch.html
-
-Applications that needs all rights after launched with Web Start,
-must have their jar files signed. HoskiAdmin jars are signed with self-signed 
-certificate. Because of self-signing, user is notified of potential security
-risks when starting the application.
-
-Key tool commands used in creating HoskiKeystore:
-
-keytool -genkey -keystore HoskiKeystore -alias hoski
-
-keytool -selfcert -alias hoski -keystore HoskiKeystore -validity 10000
+Zip files contents will expand to c:\RaceAdmin directory
 
 Development
 ===========
