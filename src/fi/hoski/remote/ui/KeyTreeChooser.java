@@ -82,6 +82,7 @@ public class KeyTreeChooser extends JDialog
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                tree.setSelectionPath(null);
                 setVisible(false);
             }
         };
