@@ -103,8 +103,9 @@ public class Version
     </echo>
     </target>
     <target name="-post-jar">
-        <copy todir="/Users/tkv/Dropbox/HoskiAdmin">
+        <copy todir="/RaceAdmin">
             <fileset dir="dist"/>
         </copy>
+        <zip destfile="../HoskiWebapp/web/RaceAdmin.zip" basedir="/RaceAdmin"/>
     </target>
 </project>
