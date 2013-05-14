@@ -393,6 +393,10 @@ public class Admin extends WindowAdapter
             };
             editAction = createActionListener(frame, editAction);
             editItem.addActionListener(editAction);
+            if (Event.isInspection(eventType))
+            {
+                editItem.setEnabled(accessUser);
+            }
             editReservation.add(editItem);
             JMenuItem mailItem = new JMenuItem(TextUtil.getString(eventType.name()));
             ActionListener mailAction = new ActionListener()
@@ -1140,20 +1144,23 @@ public class Admin extends WindowAdapter
     private void attachRaceSeriesLink(Type type) throws EntityNotFoundException
     {
         DataObject raceSeriesOrFleet = chooseRaceSeriesOrFleet();
-        Attachment attachment = new Attachment(raceSeriesOrFleet);
-        attachment.set(Attachment.TYPE, type.ordinal());
-        DataObjectDialog<Attachment> dod = new DataObjectDialog<Attachment>(frame, attachment.getModel().hide(Attachment.TYPE), attachment);
-        if (dod.edit())
+        if (raceSeriesOrFleet != null)
         {
-            Link link = (Link) attachment.get(Attachment.URL);
-            try
+            Attachment attachment = new Attachment(raceSeriesOrFleet);
+            attachment.set(Attachment.TYPE, type.ordinal());
+            DataObjectDialog<Attachment> dod = new DataObjectDialog<Attachment>(frame, attachment.getModel().hide(Attachment.TYPE), attachment);
+            if (dod.edit())
             {
-                URL url = new URL(link.getValue());
-                dss.put(attachment);
-            }
-            catch (MalformedURLException ex)
-            {
-                JOptionPane.showMessageDialog(frame, ex.getMessage());
+                Link link = (Link) attachment.get(Attachment.URL);
+                try
+                {
+                    URL url = new URL(link.getValue());
+                    dss.put(attachment);
+                }
+                catch (MalformedURLException ex)
+                {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage());
+                }
             }
         }
     }
@@ -1161,13 +1168,16 @@ public class Admin extends WindowAdapter
     private void attachRaceSeriesFile(Type type) throws IOException, EntityNotFoundException
     {
         DataObject raceSeriesOrFleet = chooseRaceSeriesOrFleet();
-        File file = openFile(RACEATTACHDIR, null, null);
-        if (file != null)
+        if (raceSeriesOrFleet != null)
         {
-            String title = JOptionPane.showInputDialog(frame, TextUtil.getString("TITLE"), TextUtil.getString(type.name()));
-            if (title != null)
+            File file = openFile(RACEATTACHDIR, null, null);
+            if (file != null)
             {
-                dss.upload(raceSeriesOrFleet, type, title, file);
+                String title = JOptionPane.showInputDialog(frame, TextUtil.getString("TITLE"), TextUtil.getString(type.name()));
+                if (title != null)
+                {
+                    dss.upload(raceSeriesOrFleet, type, title, file);
+                }
             }
         }
     }
@@ -1175,10 +1185,13 @@ public class Admin extends WindowAdapter
     private void removeRaceSeriesAttachment() throws EntityNotFoundException, IOException
     {
         DataObject raceSeriesOrFleet = chooseRaceSeriesOrFleet();
-        List<Attachment> attachments = chooseAttachments(raceSeriesOrFleet);
-        if (attachments != null)
+        if (raceSeriesOrFleet != null)
         {
-            dss.removeAttachments(attachments);
+            List<Attachment> attachments = chooseAttachments(raceSeriesOrFleet);
+            if (attachments != null)
+            {
+                dss.removeAttachments(attachments);
+            }
         }
     }
 
