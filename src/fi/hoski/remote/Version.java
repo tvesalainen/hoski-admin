@@ -2,9 +2,9 @@
 package fi.hoski.remote;
 public class Version
 {
-    public static final String version()
+    public static String version()
     {
-        return "2012.11.13 09:24:43";
+        return "2013.05.17 14:36:45";
     }
 }
     
