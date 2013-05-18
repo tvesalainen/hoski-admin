@@ -3346,7 +3346,7 @@ public class Admin extends WindowAdapter
         for (RaceEntry entry : entryList)
         {
             Competitor competitor = new Competitor();
-            competitor.setAll(checkRating(entry.getAll()));
+            competitor.setAll(entry.getAll());
             swf.addCompetitor(competitor);
         }
         swf.deleteNotNeededFleets(entryList);
