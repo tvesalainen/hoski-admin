@@ -18,6 +18,7 @@ package fi.hoski.sailwave;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 /**
  * @author Timo Vesalainen
@@ -81,22 +82,16 @@ public class Competitor extends Base
             String nat1 = get(CompetitorField.NAT);
             String sailNo1 = get(CompetitorField.SAILNO);
             String cls1 = get(CompetitorField.CLASS);
+            String helm1 = get(CompetitorField.HELMNAME);
             String nat2 = oth.get(CompetitorField.NAT);
             String sailNo2 = oth.get(CompetitorField.SAILNO);
             String cls2 = oth.get(CompetitorField.CLASS);
-            return equals(nat1, nat2) && equals(sailNo1, sailNo2);// && equals(cls1, cls2);
-        }
-        return false;
-    }
-    private boolean equals(String s1, String s2)
-    {
-        if (s1 == null && s2 == null)
-        {
-            return true;
-        }
-        if (s1 != null)
-        {
-            return s1.equalsIgnoreCase(s2);
+            String helm2 = oth.get(CompetitorField.HELMNAME);
+            return 
+                    Objects.equals(nat1, nat2) && 
+                    Objects.equals(sailNo1, sailNo2) && 
+                    Objects.equals(helm1, helm2) && 
+                    Objects.equals(cls1, cls2);
         }
         return false;
     }
