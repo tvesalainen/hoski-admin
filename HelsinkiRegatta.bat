@@ -1,0 +1,1 @@
+java -Xmx512m -classpath .:lib/* -jar HoskiAdmin.jar HelsinkiRegatta.properties

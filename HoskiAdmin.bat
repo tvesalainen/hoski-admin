@@ -1,0 +1,1 @@
+java -Xmx512m -verbose:gc -classpath lib/appengine-api.jar;lib/appengine-remote-api.jar;lib/HoskiLib.jar;opencsv-2.3.jar -jar HoskiAdmin.jar HoskiAdmin.properties

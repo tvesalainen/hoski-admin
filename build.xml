@@ -90,6 +90,10 @@ public class Version
     <copy file="${gdata-spreadsheet.jar}" todir="dist/lib"/>
     <copy file="${dsql.jar}" todir="dist/lib"/>
     <copy file="sample.properties" todir="dist"/>
+    <copy file="HelsinkiRegatta.bat" todir="dist"/>
+    <copy file="HelsinkiRegatta.properties" todir="dist"/>
+    <copy file="HoskiAdmin.bat" todir="dist"/>
+    <copy file="HoskiAdmin.properties" todir="dist"/>
     <zip destfile="${hoskiwebapp.path}/web/RaceAdmin.zip" basedir="dist"/>
   </target>
 
@@ -98,7 +102,7 @@ public class Version
     <java jar="dist/hoskilib.jar"
           fork="true"
           >
-        <arg value="sample.properties"/>
+        <arg value="HelsinkiRegatta.properties"/>
     </java>
   </target>
   
