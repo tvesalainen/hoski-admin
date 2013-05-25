@@ -71,7 +71,7 @@ public class Version
   <target name="dist" depends="build">
     <mkdir dir="dist"/>
     <mkdir dir="dist/lib"/>
-    <jar destfile="dist/hoskilib.jar" basedir="build" >
+    <jar destfile="dist/HoskiAdmin.jar" basedir="build" >
         <manifest>
             <attribute name="Main-Class" value="fi.hoski.remote.ui.Admin"/>
             <attribute name="Class-Path" value="lib/appengine-api-1.0-sdk-${appengine.version}.jar lib/appengine-remote-api.jar lib/dsql.jar lib/gdata-client-1.0.jar lib/gdata-core-1.0.jar lib/gdata-spreadsheet-3.0.jar lib/guava-12.0.jar lib/hoskilib.jar lib/htmllexer.jar lib/htmlparser.jar lib/json-org.jar lib/opencsv-2.3.jar"/>
@@ -90,16 +90,16 @@ public class Version
     <copy file="${gdata-spreadsheet.jar}" todir="dist/lib"/>
     <copy file="${dsql.jar}" todir="dist/lib"/>
     <copy file="sample.properties" todir="dist"/>
-    <copy file="HelsinkiRegatta.bat" todir="dist"/>
+    <copy file="StartHelsinkiRegatta.bat" todir="dist"/>
     <copy file="HelsinkiRegatta.properties" todir="dist"/>
-    <copy file="HoskiAdmin.bat" todir="dist"/>
+    <copy file="StartHoskiAdmin.bat" todir="dist"/>
     <copy file="HoskiAdmin.properties" todir="dist"/>
     <zip destfile="${hoskiwebapp.path}/web/RaceAdmin.zip" basedir="dist"/>
   </target>
 
   <target name="run" depends="dist"
           description="Starts the Admin console">
-    <java jar="dist/hoskilib.jar"
+    <java jar="dist/HoskiAdmin.jar"
           fork="true"
           >
         <arg value="HelsinkiRegatta.properties"/>
