@@ -93,7 +93,7 @@ public class Version
     <copy file="StartHelsinkiRegatta.bat" todir="dist"/>
     <copy file="HelsinkiRegatta.properties" todir="dist"/>
     <copy file="StartHoskiAdmin.bat" todir="dist"/>
-    <copy file="HoskiAdmin.properties" todir="dist"/>
+    <copy file="hoskiadmin.properties" todir="dist"/>
     <zip destfile="${hoskiwebapp.path}/web/RaceAdmin.zip" basedir="dist"/>
   </target>
 
