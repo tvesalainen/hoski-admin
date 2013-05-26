@@ -35,7 +35,7 @@ public class SMSPlugin extends AbstractMessagePlugin<PhoneNumber>
     public SMSPlugin(String username, String password)
     {
         super(
-                TextUtil.getString("SMS"), 
+                TextUtil.getText("SMS"), 
                 new SendSMSAction(username, password), 
                 PhoneNumber.class);
     }

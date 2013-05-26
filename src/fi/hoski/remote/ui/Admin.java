@@ -137,7 +137,7 @@ public class Admin extends WindowAdapter
             int credits = dss.messagesLeft();
             if (credits < 100)
             {
-                String smsLeftString = TextUtil.getString("SMS LEFT");
+                String smsLeftString = TextUtil.getText("SMS LEFT");
                 JOptionPane.showMessageDialog(frame, smsLeftString + " " + credits);
             }
         }
@@ -159,7 +159,7 @@ public class Admin extends WindowAdapter
     private void initFrame() throws EntityNotFoundException, MalformedURLException
     {
         Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandler());
-        frame = new JFrame(TextUtil.getString("ADMIN") + " " + creator + " / " + server + " Version: " + Version.version());
+        frame = new JFrame(TextUtil.getText("ADMIN") + " " + creator + " / " + server + " Version: " + Version.version());
         frame.addWindowListener(this);
         panel = new JPanel(new BorderLayout());
         frame.add(panel);
@@ -188,7 +188,8 @@ public class Admin extends WindowAdapter
 
     private void menuFile()
     {
-        JMenu fileMenu = new JMenu(TextUtil.getString("FILE"));
+        JMenu fileMenu = new JMenu();
+        TextUtil.populate(fileMenu, "FILE");
         menuBar.add(fileMenu);
         if (accessUser)
         {
@@ -230,7 +231,8 @@ public class Admin extends WindowAdapter
         }
         fileMenu.addSeparator();
 
-        JMenuItem exitItem = new JMenuItem(TextUtil.getString("EXIT"));
+        JMenuItem exitItem = new JMenuItem();
+        TextUtil.populate(exitItem, "EXIT");
         ActionListener exitAction = new ActionListener()
         {
 
@@ -248,7 +250,8 @@ public class Admin extends WindowAdapter
 
     private void menuRace()
     {
-        JMenu raceMenu = new JMenu(TextUtil.getString("RACES"));
+        JMenu raceMenu = new JMenu();
+        TextUtil.populate(raceMenu, "RACES");
         menuBar.add(raceMenu);
         raceMenu.add(menuItemUploadRaceSeries());
         raceMenu.add(menuItemEditRaceSeries());
@@ -276,20 +279,25 @@ public class Admin extends WindowAdapter
 
     private void menuEvent()
     {
-        JMenu eventMenu = new JMenu(TextUtil.getString("EVENTS"));
+        JMenu eventMenu = new JMenu();
+        TextUtil.populate(eventMenu, "EVENTS");
         menuBar.add(eventMenu);
-        JMenu addEventMenu = new JMenu(TextUtil.getString("ADD EVENTS"));
+        JMenu addEventMenu = new JMenu();
+        TextUtil.populate(addEventMenu, "ADD EVENTS");
         eventMenu.add(addEventMenu);
-        JMenu editEventMenu = new JMenu(TextUtil.getString("EDIT EVENTS"));
+        JMenu editEventMenu = new JMenu();
+        TextUtil.populate(editEventMenu, "EDIT EVENTS");
         eventMenu.add(editEventMenu);
-        JMenu deleteEventMenu = new JMenu(TextUtil.getString("DELETE EVENTS"));
+        JMenu deleteEventMenu = new JMenu();
+        TextUtil.populate(deleteEventMenu, "DELETE EVENTS");
         eventMenu.add(deleteEventMenu);
 
         int index = 0;
         for (final EventType eventType : EventType.values())
         {
             // add
-            JMenuItem addItem = new JMenuItem(TextUtil.getString(eventType.name()));
+            JMenuItem addItem = new JMenuItem();
+            TextUtil.populate(addItem, eventType.name());
             addItem.addActionListener(creators[index++]);
             addEventMenu.add(addItem);
             // edit
@@ -309,14 +317,15 @@ public class Admin extends WindowAdapter
                     {
                         JOptionPane.showMessageDialog(
                                 frame,
-                                TextUtil.getString("NO SELECTION"),
-                                TextUtil.getString("MESSAGE"),
+                                TextUtil.getText("NO SELECTION"),
+                                TextUtil.getText("MESSAGE"),
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             };
             editAction = createActionListener(frame, editAction);
-            JMenuItem editItem = new JMenuItem(TextUtil.getString(eventType.name()));
+            JMenuItem editItem = new JMenuItem();
+            TextUtil.populate(editItem, eventType.name());
             editItem.addActionListener(editAction);
             editEventMenu.add(editItem);
             // delete
@@ -331,7 +340,7 @@ public class Admin extends WindowAdapter
                     {
                         if (JOptionPane.showConfirmDialog(
                                 panel,
-                                TextUtil.getString("CONFIRM DELETE")) == JOptionPane.YES_OPTION)
+                                TextUtil.getText("CONFIRM DELETE")) == JOptionPane.YES_OPTION)
                         {
                             dss.deleteEvents(selected);
                         }
@@ -340,14 +349,15 @@ public class Admin extends WindowAdapter
                     {
                         JOptionPane.showMessageDialog(
                                 frame,
-                                TextUtil.getString("NO SELECTION"),
-                                TextUtil.getString("MESSAGE"),
+                                TextUtil.getText("NO SELECTION"),
+                                TextUtil.getText("MESSAGE"),
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             };
             deleteAction = createActionListener(frame, deleteAction);
-            JMenuItem deleteItem = new JMenuItem(TextUtil.getString(eventType.name()));
+            JMenuItem deleteItem = new JMenuItem();
+            TextUtil.populate(deleteItem, eventType.name());
             deleteItem.addActionListener(deleteAction);
             deleteEventMenu.add(deleteItem);
         }
@@ -355,15 +365,20 @@ public class Admin extends WindowAdapter
 
     private void menuReservation()
     {
-        menuReservation = new JMenu(TextUtil.getString("RESERVATIONS"));
+        menuReservation = new JMenu();
+        TextUtil.populate(menuReservation, "RESERVATIONS");
         menuBar.add(menuReservation);
-        JMenu menuMakeReservation = new JMenu(TextUtil.getString("MAKE RESERVATION"));
+        JMenu menuMakeReservation = new JMenu();
+        TextUtil.populate(menuMakeReservation, "MAKE RESERVATION");
         menuReservation.add(menuMakeReservation);
-        JMenu editReservation = new JMenu(TextUtil.getString("EDIT RESERVATION"));
+        JMenu editReservation = new JMenu();
+        TextUtil.populate(editReservation, "EDIT RESERVATION");
         menuReservation.add(editReservation);
-        JMenu mailMenu = new JMenu(TextUtil.getString("SEND EMAIL"));
+        JMenu mailMenu = new JMenu();
+        TextUtil.populate(mailMenu, "SEND EMAIL");
         menuReservation.add(mailMenu);
-        JMenu smsMenu = new JMenu(TextUtil.getString("SEND SMS"));
+        JMenu smsMenu = new JMenu();
+        TextUtil.populate(smsMenu, "SEND SMS");
         smsMenu.setEnabled(serverProperties.isZonerSMSSupported());
         menuReservation.add(smsMenu);
         for (final EventType eventType : EventType.values())
@@ -378,10 +393,12 @@ public class Admin extends WindowAdapter
                 }
             };
             action = createActionListener(frame, action);
-            JMenuItem menuItem = new JMenuItem(TextUtil.getString(eventType.name()));
+            JMenuItem menuItem = new JMenuItem();
+            TextUtil.populate(menuItem, eventType.name());
             menuItem.addActionListener(action);
             menuMakeReservation.add(menuItem);
-            JMenuItem editItem = new JMenuItem(TextUtil.getString(eventType.name()));
+            JMenuItem editItem = new JMenuItem();
+            TextUtil.populate(editItem, eventType.name());
             ActionListener editAction = new ActionListener()
             {
 
@@ -398,7 +415,8 @@ public class Admin extends WindowAdapter
                 editItem.setEnabled(accessUser);
             }
             editReservation.add(editItem);
-            JMenuItem mailItem = new JMenuItem(TextUtil.getString(eventType.name()));
+            JMenuItem mailItem = new JMenuItem();
+            TextUtil.populate(mailItem, eventType.name());
             ActionListener mailAction = new ActionListener()
             {
 
@@ -413,7 +431,7 @@ public class Admin extends WindowAdapter
                             Event event = selected.get(0);
                             List<Reservation> reservationList = dss.getReservations(event);
                             Day date = (Day) event.get(Event.EventDate);
-                            String subject = TextUtil.getString(eventType.name()) + " " + date;
+                            String subject = TextUtil.getText(eventType.name()) + " " + date;
                             String body = getMessage(eventType.name());
                             MailDialog md = new MailDialog(frame, subject, body, reservationList);
                             if (md.edit())
@@ -429,8 +447,8 @@ public class Admin extends WindowAdapter
                     {
                         JOptionPane.showMessageDialog(
                                 frame,
-                                TextUtil.getString("NO SELECTION"),
-                                TextUtil.getString("MESSAGE"),
+                                TextUtil.getText("NO SELECTION"),
+                                TextUtil.getText("MESSAGE"),
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
@@ -438,8 +456,8 @@ public class Admin extends WindowAdapter
             mailAction = createActionListener(frame, mailAction);
             mailItem.addActionListener(mailAction);
             mailMenu.add(mailItem);
-            final String title = TextUtil.getString(eventType.name());
-            JMenuItem smsItem = new JMenuItem(title);
+            JMenuItem smsItem = new JMenuItem();
+            TextUtil.populate(smsItem, eventType.name());
             ActionListener smsAction = new ActionListener()
             {
 
@@ -465,7 +483,7 @@ public class Admin extends WindowAdapter
                             }
                             SMSDialog sd = new SMSDialog(
                                     frame,
-                                    title,
+                                    TextUtil.getText(eventType.name()),
                                     "",
                                     phoneList);
                             if (sd.edit())
@@ -485,8 +503,8 @@ public class Admin extends WindowAdapter
                     {
                         JOptionPane.showMessageDialog(
                                 frame,
-                                TextUtil.getString("NO SELECTION"),
-                                TextUtil.getString("MESSAGE"),
+                                TextUtil.getText("NO SELECTION"),
+                                TextUtil.getText("MESSAGE"),
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
@@ -499,7 +517,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemRemoveEntity()
     {
-        final String title = TextUtil.getString("REMOVE ENTITY");
+        final String title = TextUtil.getText("REMOVE ENTITY");
         JMenuItem removeEntityItem = new JMenuItem(title);
         ActionListener removeEntityAction = new ActionListener()
         {
@@ -510,13 +528,13 @@ public class Admin extends WindowAdapter
                 Object kind = JOptionPane.showInputDialog(frame, title, "", JOptionPane.OK_CANCEL_OPTION, null, serverProperties.getTables(), null);
                 if (kind != null)
                 {
-                    String confirm = TextUtil.getString("CONFIRM REMOVE") + " " + kind;
+                    String confirm = TextUtil.getText("CONFIRM REMOVE") + " " + kind;
                     if (JOptionPane.showConfirmDialog(frame, confirm, "", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
                     {
                         List<String> kindList = new ArrayList<String>();
                         kindList.add(kind.toString());
                         int count = dss.remove(kindList);
-                        JOptionPane.showMessageDialog(frame, TextUtil.getString("REMOVED") + " " + count);
+                        JOptionPane.showMessageDialog(frame, TextUtil.getText("REMOVED") + " " + count);
                     }
                 }
             }
@@ -528,7 +546,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemRemoveYear()
     {
-        final String title = TextUtil.getString("REMOVE YEAR");
+        final String title = TextUtil.getText("REMOVE YEAR");
         JMenuItem removeEntityItem = new JMenuItem(title);
         ActionListener removeEntityAction = new ActionListener()
         {
@@ -539,7 +557,7 @@ public class Admin extends WindowAdapter
                 Object yearString = JOptionPane.showInputDialog(frame, title, "", JOptionPane.OK_CANCEL_OPTION);
                 if (yearString != null)
                 {
-                    String confirm = TextUtil.getString("CONFIRM REMOVE") + " " + yearString;
+                    String confirm = TextUtil.getText("CONFIRM REMOVE") + " " + yearString;
                     if (JOptionPane.showConfirmDialog(frame, confirm, "", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
                     {
                         long year = Long.parseLong(yearString.toString());
@@ -547,11 +565,11 @@ public class Admin extends WindowAdapter
                         if (year < now.getYear())
                         {
                             int count = dss.remove(year);
-                            JOptionPane.showMessageDialog(frame, TextUtil.getString("REMOVED") + " " + count);
+                            JOptionPane.showMessageDialog(frame, TextUtil.getText("REMOVED") + " " + count);
                         }
                         else
                         {
-                            JOptionPane.showMessageDialog(frame, TextUtil.getString("CANNOT REMOVE") + " " + year);
+                            JOptionPane.showMessageDialog(frame, TextUtil.getText("CANNOT REMOVE") + " " + year);
                         }
                     }
                 }
@@ -565,7 +583,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemBackupEntity()
     {
-        final String title = TextUtil.getString("BACKUP ENTITY");
+        final String title = TextUtil.getText("BACKUP ENTITY");
         JMenuItem backupYearItem = new JMenuItem(title);
         ActionListener backupYearAction = new ActionListener()
         {
@@ -589,7 +607,7 @@ public class Admin extends WindowAdapter
                             List<String> list = new ArrayList<String>();
                             list.add(kind.toString());
                             count = dss.backup(list, oos);
-                            JOptionPane.showMessageDialog(frame, TextUtil.getString("STORED") + " " + count);
+                            JOptionPane.showMessageDialog(frame, TextUtil.getText("STORED") + " " + count);
                         }
                         catch (IOException ex)
                         {
@@ -607,7 +625,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemBackupYear()
     {
-        final String title = TextUtil.getString("BACKUP YEAR");
+        final String title = TextUtil.getText("BACKUP YEAR");
         JMenuItem backupYearItem = new JMenuItem(title);
         ActionListener backupYearAction = new ActionListener()
         {
@@ -628,7 +646,7 @@ public class Admin extends WindowAdapter
                             BufferedOutputStream bos = new BufferedOutputStream(fos);
                             ObjectOutputStream oos = new ObjectOutputStream(bos);
                             count = dss.backup(year, oos);
-                            JOptionPane.showMessageDialog(frame, TextUtil.getString("STORED") + " " + count);
+                            JOptionPane.showMessageDialog(frame, TextUtil.getText("STORED") + " " + count);
                         }
                         catch (IOException ex)
                         {
@@ -646,7 +664,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemRestore()
     {
-        final String title = TextUtil.getString("RESTORE");
+        final String title = TextUtil.getText("RESTORE");
         JMenuItem backupYearItem = new JMenuItem(title);
         ActionListener backupYearAction = new ActionListener()
         {
@@ -663,7 +681,7 @@ public class Admin extends WindowAdapter
                         BufferedInputStream bis = new BufferedInputStream(fos);
                         ObjectInputStream ois = new ObjectInputStream(bis);
                         count = dss.restore(ois);
-                        JOptionPane.showMessageDialog(frame, TextUtil.getString("RESTORED") + " " + count);
+                        JOptionPane.showMessageDialog(frame, TextUtil.getText("RESTORED") + " " + count);
                     }
                     catch (IOException ex)
                     {
@@ -706,7 +724,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemSql()
     {
-        final String title = TextUtil.getString("JDBC SQL");
+        final String title = TextUtil.getText("JDBC SQL");
         JMenuItem sqlItem = new JMenuItem(title);
         ActionListener sqlAction = new ActionListener()
         {
@@ -733,7 +751,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemUninspectedBoats()
     {
-        final String title = TextUtil.getString("UNINSPECTED BOATS");
+        final String title = TextUtil.getText("UNINSPECTED BOATS");
         JMenuItem sqlItem = new JMenuItem(title);
         ActionListener sqlAction = new ActionListener()
         {
@@ -767,7 +785,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemAddYear()
     {
-        final String title = TextUtil.getString("ADD YEAR");
+        final String title = TextUtil.getText("ADD YEAR");
         JMenuItem addYearItem = new JMenuItem(title);
         ActionListener addYearAction = new ActionListener()
         {
@@ -775,7 +793,7 @@ public class Admin extends WindowAdapter
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                String year = JOptionPane.showInputDialog(frame, TextUtil.getString("ADD YEAR"));
+                String year = JOptionPane.showInputDialog(frame, TextUtil.getText("ADD YEAR"));
                 int y = Integer.parseInt(year);
                 if (y >= 1800 && y <= 2100)
                 {
@@ -789,7 +807,7 @@ public class Admin extends WindowAdapter
     }
     private JMenuItem menuItemInspectAllLightBoats()
     {
-        final String title = TextUtil.getString("INSPECT ALL LIGHT BOATS");
+        final String title = TextUtil.getText("INSPECT ALL LIGHT BOATS");
         JMenuItem inspectAllLightBoatsItem = new JMenuItem(title);
         ActionListener inspectAllLightBoatsAction = new ActionListener()
         {
@@ -815,7 +833,7 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemRestoreEntity()
     {
-        final String title = TextUtil.getString("RESTORE ENTITY");
+        final String title = TextUtil.getText("RESTORE ENTITY");
         JMenuItem backupYearItem = new JMenuItem(title);
         ActionListener backupYearAction = new ActionListener()
         {
@@ -837,7 +855,7 @@ public class Admin extends WindowAdapter
                             List<String> list = new ArrayList<String>();
                             list.add(kind.toString());
                             count = dss.restore(list, ois);
-                            JOptionPane.showMessageDialog(frame, TextUtil.getString("RESTORED") + " " + count);
+                            JOptionPane.showMessageDialog(frame, TextUtil.getText("RESTORED") + " " + count);
                         }
                         catch (IOException ex)
                         {
@@ -855,7 +873,8 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemSMSCredits()
     {
-        JMenuItem creditItem = new JMenuItem(TextUtil.getString("CHECK CREDITS"));
+        JMenuItem creditItem = new JMenuItem();
+        TextUtil.populate(creditItem, "CHECK CREDITS");
         ActionListener creditAction = new ActionListener()
         {
 
@@ -865,7 +884,7 @@ public class Admin extends WindowAdapter
                 try
                 {
                     int credits = dss.messagesLeft();
-                    String smsLeftString = TextUtil.getString("SMS LEFT");
+                    String smsLeftString = TextUtil.getText("SMS LEFT");
                     JOptionPane.showMessageDialog(frame, smsLeftString + " " + credits);
                 }
                 catch (IOException ex)
@@ -886,7 +905,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemDownloadCompetitorsForSailwave()
     {
         // download series
-        JMenuItem downloadRaceCompetitorsForSailwave = new JMenuItem(TextUtil.getString("DOWNLOAD COMPETITORS FOR SAILWAVE"));
+        JMenuItem downloadRaceCompetitorsForSailwave = new JMenuItem();
+        TextUtil.populate(downloadRaceCompetitorsForSailwave, "DOWNLOAD COMPETITORS FOR SAILWAVE");
         ActionListener downloadCompetitorsForSailwaveAction = new ActionListener()
         {
 
@@ -912,7 +932,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemInsertCompetitorsToSailwave()
     {
         // download series
-        JMenuItem insertRaceCompetitorsToSailwave = new JMenuItem(TextUtil.getString("INSERT COMPETITORS TO SAILWAVE"));
+        JMenuItem insertRaceCompetitorsToSailwave = new JMenuItem();
+        TextUtil.populate(insertRaceCompetitorsToSailwave, "INSERT COMPETITORS TO SAILWAVE");
         ActionListener insertCompetitorsToSailwaveAction = new ActionListener()
         {
 
@@ -938,7 +959,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemDownloadCompetitorsAsCVS()
     {
         // download series
-        JMenuItem downloadRaceCompetitorsAsCVS = new JMenuItem(TextUtil.getString("DOWNLOAD COMPETITORS AS CVS"));
+        JMenuItem downloadRaceCompetitorsAsCVS = new JMenuItem();
+        TextUtil.populate(downloadRaceCompetitorsAsCVS, "DOWNLOAD COMPETITORS AS CVS");
         ActionListener downloadCompetitorsAsCVSAction = new ActionListener()
         {
 
@@ -964,7 +986,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemCreatePLSGoogleDocs()
     {
         // download series
-        JMenuItem createPLSGoogleDocs = new JMenuItem(TextUtil.getString("CREATE PLS GOOGLE DOCS"));
+        JMenuItem createPLSGoogleDocs = new JMenuItem();
+        TextUtil.populate(createPLSGoogleDocs, "CREATE PLS GOOGLE DOCS");
         ActionListener createPLSGoogleDocsAction = new ActionListener()
         {
 
@@ -990,7 +1013,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemCreateToTGoogleDocs()
     {
         // download series
-        JMenuItem createToTGoogleDocs = new JMenuItem(TextUtil.getString("CREATE TOT GOOGLE DOCS"));
+        JMenuItem createToTGoogleDocs = new JMenuItem();
+        TextUtil.populate(createToTGoogleDocs, "CREATE TOT GOOGLE DOCS");
         ActionListener createToTGoogleDocsAction = new ActionListener()
         {
 
@@ -1016,7 +1040,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemRaceEmail()
     {
         // download series
-        JMenuItem raceEmail = new JMenuItem(TextUtil.getString("SEND EMAIL"));
+        JMenuItem raceEmail = new JMenuItem();
+        TextUtil.populate(raceEmail, "SEND EMAIL");
         ActionListener raceEmailAction = new ActionListener()
         {
 
@@ -1044,7 +1069,7 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemRaceSMS()
     {
         // download series
-        final String title = TextUtil.getString("SEND SMS");
+        final String title = TextUtil.getText("SEND SMS");
         JMenuItem raceSMS = new JMenuItem(title);
         ActionListener raceSMSAction = new ActionListener()
         {
@@ -1088,13 +1113,16 @@ public class Admin extends WindowAdapter
     private JMenu menuItemAttachRaceSeries()
     {
         // download series
-        JMenu attachRaceSeriesMenu = new JMenu(TextUtil.getString("ATTACH RACE"));
+        JMenu attachRaceSeriesMenu = new JMenu();
+        TextUtil.populate(attachRaceSeriesMenu, "ATTACH RACE");
         for (final Attachment.Type type : Attachment.Type.values())
         {
-            JMenu attachmentType = new JMenu(TextUtil.getString(type.name()));
+            JMenu attachmentType = new JMenu(TextUtil.getText(type.name()));
+            TextUtil.populate(attachmentType, type.name());
             attachRaceSeriesMenu.add(attachmentType);
 
-            JMenuItem fileItem = new JMenuItem(TextUtil.getString("FILE"));
+            JMenuItem fileItem = new JMenuItem();
+            TextUtil.populate(fileItem, "FILE");
             ActionListener fileAction = new ActionListener()
             {
 
@@ -1116,7 +1144,8 @@ public class Admin extends WindowAdapter
             fileItem.addActionListener(fileAction);
             attachmentType.add(fileItem);
 
-            JMenuItem linkItem = new JMenuItem(TextUtil.getString("LINK"));
+            JMenuItem linkItem = new JMenuItem();
+            TextUtil.populate(linkItem, "LINK");
             ActionListener linkAction = new ActionListener()
             {
 
@@ -1173,7 +1202,7 @@ public class Admin extends WindowAdapter
             File file = openFile(RACEATTACHDIR, null, null);
             if (file != null)
             {
-                String title = JOptionPane.showInputDialog(frame, TextUtil.getString("TITLE"), TextUtil.getString(type.name()));
+                String title = JOptionPane.showInputDialog(frame, TextUtil.getText("TITLE"), TextUtil.getText(type.name()));
                 if (title != null)
                 {
                     dss.upload(raceSeriesOrFleet, type, title, file);
@@ -1198,7 +1227,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemRemoveRaceSeriesAttachment()
     {
         // download series
-        JMenuItem removeAttachmentItem = new JMenuItem(TextUtil.getString("REMOVE ATTACHMENT"));
+        JMenuItem removeAttachmentItem = new JMenuItem();
+        TextUtil.populate(removeAttachmentItem, "REMOVE ATTACHMENT");
         ActionListener removeAttachmentAction = new ActionListener()
         {
 
@@ -1224,7 +1254,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemUploadRanking()
     {
         // upload ranking
-        JMenuItem uploadRankingItem = new JMenuItem(TextUtil.getString("UPLOAD RANKING"));
+        JMenuItem uploadRankingItem = new JMenuItem();
+        TextUtil.populate(uploadRankingItem, "UPLOAD RANKING");
         ActionListener uploadRankingAction = new ActionListener()
         {
 
@@ -1252,7 +1283,8 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemAddReferencePayments()
     {
-        JMenuItem addPaymentsItem = new JMenuItem(TextUtil.getString("ADD REFERENCE PAYMENTS"));
+        JMenuItem addPaymentsItem = new JMenuItem();
+        TextUtil.populate(addPaymentsItem, "ADD REFERENCE PAYMENTS");
         ActionListener addPaymentsAction = new ActionListener()
         {
 
@@ -1282,7 +1314,7 @@ public class Admin extends WindowAdapter
             CreditorReference cr = null;
             while (true)
             {
-                reference = JOptionPane.showInputDialog(frame, TextUtil.getString("REFERENCE"), reference);
+                reference = JOptionPane.showInputDialog(frame, TextUtil.getText("REFERENCE"), reference);
                 if (reference == null)
                 {
                     return;
@@ -1319,7 +1351,8 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemAddOtherPayments()
     {
-        JMenuItem addPaymentsItem = new JMenuItem(TextUtil.getString("ADD OTHER PAYMENTS"));
+        JMenuItem addPaymentsItem = new JMenuItem();
+        TextUtil.populate(addPaymentsItem, "ADD OTHER PAYMENTS");
         ActionListener addPaymentsAction = new ActionListener()
         {
 
@@ -1353,7 +1386,7 @@ public class Admin extends WindowAdapter
         List<RaceEntry> unpaidRaceEntries = dss.getUnpaidRaceEntries();
         while (true)
         {
-            String totalStr = JOptionPane.showInputDialog(frame, TextUtil.getString("TOTAL"));
+            String totalStr = JOptionPane.showInputDialog(frame, TextUtil.getText("TOTAL"));
             if (totalStr == null)
             {
                 return;
@@ -1466,7 +1499,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemUploadRaceSeries()
     {
         // upload series
-        JMenuItem uploadRaceSeriesItem = new JMenuItem(TextUtil.getString("UPLOAD RACE"));
+        JMenuItem uploadRaceSeriesItem = new JMenuItem();
+        TextUtil.populate(uploadRaceSeriesItem, "UPLOAD RACE");
         ActionListener uploadRaceSeriesAction = new ActionListener()
         {
 
@@ -1496,7 +1530,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemEditRaceSeries()
     {
         // upload series
-        JMenuItem editRaceSeriesItem = new JMenuItem(TextUtil.getString("EDIT RACE"));
+        JMenuItem editRaceSeriesItem = new JMenuItem(TextUtil.getText("EDIT RACE"));
+        TextUtil.populate(editRaceSeriesItem, "EDIT RACE");
         ActionListener editRaceSeriesAction = new ActionListener()
         {
 
@@ -1522,7 +1557,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemRemoveRaceSeries()
     {
         // upload series
-        JMenuItem removeRaceSeriesItem = new JMenuItem(TextUtil.getString("REMOVE RACE"));
+        JMenuItem removeRaceSeriesItem = new JMenuItem(TextUtil.getText("REMOVE RACE"));
+        TextUtil.populate(removeRaceSeriesItem, "REMOVE RACE");
         ActionListener removeRaceSeriesAction = new ActionListener()
         {
 
@@ -1547,7 +1583,8 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemSync()
     {
-        JMenuItem syncItem = new JMenuItem(TextUtil.getString("SYNCHRONIZE"));
+        JMenuItem syncItem = new JMenuItem();
+        TextUtil.populate(syncItem, "SYNCHRONIZE");
         ActionListener syncAction = new ActionListener()
         {
 
@@ -1560,7 +1597,7 @@ public class Admin extends WindowAdapter
                     @Override
                     protected Void doInBackground() throws Exception
                     {
-                        Progress progress = new UIProgress(frame, TextUtil.getString("SYNCHRONIZE"));
+                        Progress progress = new UIProgress(frame, TextUtil.getText("SYNCHRONIZE"));
                         progress.setNote("");
                         try
                         {
@@ -1585,7 +1622,8 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemTextMaintenence()
     {
-        JMenuItem textMaintenenceItem = new JMenuItem(TextUtil.getString("TEXT MAINTENANCE"));
+        JMenuItem textMaintenenceItem = new JMenuItem();
+        TextUtil.populate(textMaintenenceItem, "TEXT MAINTENANCE");
         ActionListener maintenanceAction = new ActionListener()
         {
 
@@ -1608,7 +1646,8 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemTextUpload()
     {
-        JMenuItem textUploadItem = new JMenuItem(TextUtil.getString("TEXT UPLOAD"));
+        JMenuItem textUploadItem = new JMenuItem();
+        TextUtil.populate(textUploadItem, "TEXT UPLOAD");
         ActionListener textUploadAction = new ActionListener()
         {
 
@@ -1634,7 +1673,8 @@ public class Admin extends WindowAdapter
 
     private JMenuItem menuItemTextDownload()
     {
-        JMenuItem textDownloadItem = new JMenuItem(TextUtil.getString("TEXT DOWNLOAD"));
+        JMenuItem textDownloadItem = new JMenuItem();
+        TextUtil.populate(textDownloadItem, "TEXT DOWNLOAD");
         ActionListener textDownloadAction = new ActionListener()
         {
 
@@ -1660,9 +1700,10 @@ public class Admin extends WindowAdapter
 
     private JMenu menuItemAttach()
     {
-        JMenu attachMenu = new JMenu(TextUtil.getString("ADD ATTACHMENT"));
-
-        JMenuItem fileItem = new JMenuItem(TextUtil.getString("FILE"));
+        JMenu attachMenu = new JMenu(TextUtil.getText("ADD ATTACHMENT"));
+        TextUtil.populate(attachMenu, "ADD ATTACHMENT");
+        JMenuItem fileItem = new JMenuItem();
+        TextUtil.populate(fileItem, "FILE");
         ActionListener fileAction = new ActionListener()
         {
 
@@ -1684,7 +1725,8 @@ public class Admin extends WindowAdapter
         fileItem.addActionListener(fileAction);
         attachMenu.add(fileItem);
 
-        JMenuItem linkItem = new JMenuItem(TextUtil.getString("LINK"));
+        JMenuItem linkItem = new JMenuItem();
+        TextUtil.populate(linkItem, "LINK");
         ActionListener linkAction = new ActionListener()
         {
 
@@ -1733,7 +1775,7 @@ public class Admin extends WindowAdapter
     {
         Title root = chooseTitle();
         File file = openFile(ATTACHDIR, null, null);
-        String title = JOptionPane.showInputDialog(frame, TextUtil.getString("TITLE"));
+        String title = JOptionPane.showInputDialog(frame, TextUtil.getText("TITLE"));
         if (title != null)
         {
             dss.upload(root, Attachment.Type.OTHER, title, file);
@@ -1753,7 +1795,8 @@ public class Admin extends WindowAdapter
     private JMenuItem menuItemRemoveAttachment()
     {
         // download series
-        JMenuItem removeAttachmentItem = new JMenuItem(TextUtil.getString("REMOVE ATTACHMENT"));
+        JMenuItem removeAttachmentItem = new JMenuItem(TextUtil.getText("REMOVE ATTACHMENT"));
+        TextUtil.populate(removeAttachmentItem, "REMOVE ATTACHMENT");
         ActionListener removeAttachmentAction = new ActionListener()
         {
 
@@ -1784,7 +1827,7 @@ public class Admin extends WindowAdapter
         DataObjectChooser<Title> ec = new DataObjectChooser<Title>(
                 Title.MODEL,
                 titles,
-                TextUtil.getString("TITLE"),
+                TextUtil.getText("TITLE"),
                 "CHOOSE");
         ec.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         List<Title> selectedTitle = ec.choose();
@@ -1841,7 +1884,7 @@ public class Admin extends WindowAdapter
     {
         if (reservationList != null)
         {
-            String msg = TextUtil.getString("CONFIRM MODIFICATIONS");
+            String msg = TextUtil.getText("CONFIRM MODIFICATIONS");
             if (JOptionPane.showConfirmDialog(frame, msg, "", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
             {
                 saveReservations();
@@ -1962,7 +2005,7 @@ public class Admin extends WindowAdapter
         final Event event = chooseEvent(eventType, "CHOOSE");
         if (event != null)
         {
-            final String eventTitle = TextUtil.getString(event.getEventType().name()) + " " + event.get(Event.EventDate);
+            final String eventTitle = TextUtil.getText(event.getEventType().name()) + " " + event.get(Event.EventDate);
             safeTitle = frame.getTitle();
             frame.setTitle(eventTitle);
             reservationList = dss.getReservations(event);
@@ -2064,12 +2107,12 @@ public class Admin extends WindowAdapter
                 orderedtable.setAutoCreateRowSorter(true);
             }
             leftPane = new JScrollPane();
-            leftPane.setViewport(new InfoViewport(TextUtil.getString(eventType.name() + "-leftPane")));
+            leftPane.setViewport(new InfoViewport(TextUtil.getText(eventType.name() + "-leftPane")));
             leftPane.setViewportView(unorderedtable);
             leftPane.setTransferHandler(unorderedTransferHandler);
 
             rightPane = new JScrollPane();
-            rightPane.setViewport(new InfoViewport(TextUtil.getString(eventType.name() + "-rightPane")));
+            rightPane.setViewport(new InfoViewport(TextUtil.getText(eventType.name() + "-rightPane")));
             rightPane.setViewportView(orderedtable);
             rightPane.setTransferHandler(orderedTransferHandler);
 
@@ -2084,7 +2127,8 @@ public class Admin extends WindowAdapter
             buttonPanel.setLayout(new FlowLayout());
             contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
-            JButton saveButton = new JButton(TextUtil.getString("SAVE"));
+            JButton saveButton = new JButton();
+            TextUtil.populate(saveButton, "SAVE");
             saveButton.setEnabled(!Event.isInspection(eventType));
             ActionListener saveAction = new ActionListener()
             {
@@ -2104,8 +2148,8 @@ public class Admin extends WindowAdapter
                 {
                     if (privileged)
                     {
-                        JButton inspectButton = new JButton(TextUtil.getString("SET INSPECTED"));
-                        inspectButton.setToolTipText(TextUtil.getString("SET INSPECTED TT"));
+                        JButton inspectButton = new JButton();
+                        TextUtil.populate(inspectButton, "SET INSPECTED");
                         ActionListener inspectAction = new ActionListener()
                         {
 
@@ -2132,7 +2176,8 @@ public class Admin extends WindowAdapter
                         buttonPanel.add(inspectButton);
                     }
                     
-                    JButton addBoat = new JButton(TextUtil.getString("ADD BOAT"));
+                    JButton addBoat = new JButton();
+                    TextUtil.populate(addBoat, "ADD BOAT");
                     ActionListener addBoatAction = new ActionListener()
                     {
 
@@ -2151,7 +2196,8 @@ public class Admin extends WindowAdapter
                     addBoat.addActionListener(addBoatAction);
                     buttonPanel.add(addBoat);
 
-                    JButton printTypeButton = new JButton(TextUtil.getString("PRINT"));
+                    JButton printTypeButton = new JButton();
+                    TextUtil.populate(printTypeButton, "PRINT");
                     ActionListener printTypeAction = new ActionListener()
                     {
 
@@ -2172,7 +2218,8 @@ public class Admin extends WindowAdapter
                     printTypeButton.addActionListener(printTypeAction);
                     buttonPanel.add(printTypeButton);
 
-                    JButton printDockButton = new JButton(TextUtil.getString("PRINT DOCK ORDER"));
+                    JButton printDockButton = new JButton();
+                    TextUtil.populate(printDockButton, "PRINT DOCK ORDER");
                     ActionListener printDockAction = new ActionListener()
                     {
 
@@ -2197,7 +2244,8 @@ public class Admin extends WindowAdapter
                 break;
                 case HULL_INSPECTION:
                 {
-                    JButton print = new JButton(TextUtil.getString("PRINT"));
+                    JButton print = new JButton();
+                    TextUtil.populate(print, "PRINT");
                     ActionListener printAction = new ActionListener()
                     {
 
@@ -2223,7 +2271,8 @@ public class Admin extends WindowAdapter
                 case LAUNCH:
                 case LIFT:
                 {
-                    JButton addBoat = new JButton(TextUtil.getString("ADD BOAT"));
+                    JButton addBoat = new JButton();
+                    TextUtil.populate(addBoat, "ADD BOAT");
                     ActionListener addBoatAction = new ActionListener()
                     {
 
@@ -2242,7 +2291,8 @@ public class Admin extends WindowAdapter
                     addBoat.addActionListener(addBoatAction);
                     buttonPanel.add(addBoat);
 
-                    JButton printBrief = new JButton(TextUtil.getString("BRIEF PRINT"));
+                    JButton printBrief = new JButton();
+                    TextUtil.populate(printBrief, "BRIEF PRINT");
                     ActionListener printBriefAction = new ActionListener()
                     {
 
@@ -2263,7 +2313,8 @@ public class Admin extends WindowAdapter
                     printBrief.addActionListener(printBriefAction);
                     buttonPanel.add(printBrief);
 
-                    JButton print = new JButton(TextUtil.getString("PRINT"));
+                    JButton print = new JButton();
+                    TextUtil.populate(print, "PRINT");
                     ActionListener printAction = new ActionListener()
                     {
 
@@ -2294,7 +2345,8 @@ public class Admin extends WindowAdapter
                 break;
             }
 
-            JButton cancelButton = new JButton(TextUtil.getString("CANCEL"));
+            JButton cancelButton = new JButton();
+            TextUtil.populate(cancelButton, "CANCEL");
             ActionListener cancelAction = new ActionListener()
             {
 
@@ -2524,7 +2576,7 @@ public class Admin extends WindowAdapter
         DataObjectChooser<Event> ec = new DataObjectChooser<Event>(
                 Event.MODEL,
                 eventList,
-                TextUtil.getString(eventType.name()),
+                TextUtil.getText(eventType.name()),
                 action);
         ec.setSelectAlways(true);
         if (singleSelection)
@@ -2538,7 +2590,7 @@ public class Admin extends WindowAdapter
     {
         // search a member
         String[] columns = Member.MODEL.getProperties();
-        String lastName = JOptionPane.showInputDialog(panel, TextUtil.getString(Member.SUKUNIMI) + "?");
+        String lastName = JOptionPane.showInputDialog(panel, TextUtil.getText(Member.SUKUNIMI) + "?");
         if (lastName == null)
         {
             return null;
@@ -2549,7 +2601,7 @@ public class Admin extends WindowAdapter
         DataObjectChooser<AnyDataObject> ec = new DataObjectChooser<AnyDataObject>(
                 Member.MODEL,
                 memberList,
-                TextUtil.getString(eventType.name()),
+                TextUtil.getText(eventType.name()),
                 "CHOOSE");
         ec.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         List<AnyDataObject> selected = ec.choose();
@@ -2568,8 +2620,8 @@ public class Admin extends WindowAdapter
         {
             JOptionPane.showMessageDialog(
                     frame,
-                    TextUtil.getString("NO SELECTION"),
-                    TextUtil.getString("MESSAGE"),
+                    TextUtil.getText("NO SELECTION"),
+                    TextUtil.getText("MESSAGE"),
                     JOptionPane.INFORMATION_MESSAGE);
         }
         return null;
@@ -2585,7 +2637,7 @@ public class Admin extends WindowAdapter
         DataObjectChooser<AnyDataObject> ec = new DataObjectChooser<AnyDataObject>(
                 Boat.MODEL,
                 boatList,
-                TextUtil.getString(eventType.name()),
+                TextUtil.getText(eventType.name()),
                 "CHOOSE");
         ec.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         List<AnyDataObject> selectedBoats = ec.choose();
@@ -2618,7 +2670,7 @@ public class Admin extends WindowAdapter
             }
             reservation.setAll(userData);
             reservation.set(Reservation.CREATOR, creator);
-            String title = TextUtil.getString(eventType.name());
+            String title = TextUtil.getText(eventType.name());
             DataObjectDialog<Reservation> et = new DataObjectDialog<Reservation>(frame, title, model, reservation);
             if (et.edit())
             {
@@ -2638,8 +2690,8 @@ public class Admin extends WindowAdapter
         {
             JOptionPane.showMessageDialog(
                     frame,
-                    TextUtil.getString("NO SELECTION"),
-                    TextUtil.getString("MESSAGE"),
+                    TextUtil.getText("NO SELECTION"),
+                    TextUtil.getText("MESSAGE"),
                     JOptionPane.INFORMATION_MESSAGE);
         }
         return null;
@@ -2649,7 +2701,8 @@ public class Admin extends WindowAdapter
     {
         if (privileged)
         {
-            JMenu patrolMenu = new JMenu(TextUtil.getString("PATROL SHIFT"));
+            JMenu patrolMenu = new JMenu();
+            TextUtil.populate(patrolMenu, "PATROL SHIFT");
             menuBar.add(patrolMenu);
             patrolMenu.add(menuItemSwapPatrolShift());
             patrolMenu.add(menuItemChangePatrolShift());
@@ -2659,7 +2712,8 @@ public class Admin extends WindowAdapter
 
     private void menuQuery()
     {
-        JMenu queryMenu = new JMenu(TextUtil.getString("QUERIES"));
+        JMenu queryMenu = new JMenu();
+        TextUtil.populate(queryMenu, "QUERIES");
         menuBar.add(queryMenu);
         queryMenu.add(menuItemQuery());
         queryMenu.add(menuItemEditQuery());
@@ -2678,7 +2732,8 @@ public class Admin extends WindowAdapter
 
         };
         queryAction = createActionListener(frame, queryAction);
-        JMenuItem queryItem = new JMenuItem(TextUtil.getString("START QUERY"));
+        JMenuItem queryItem = new JMenuItem();
+        TextUtil.populate(queryItem, "START QUERY");
         queryItem.addActionListener(queryAction);
         return queryItem;
     }
@@ -2696,7 +2751,8 @@ public class Admin extends WindowAdapter
 
         };
         queryAction = createActionListener(frame, queryAction);
-        JMenuItem queryItem = new JMenuItem(TextUtil.getString("EDIT QUERY"));
+        JMenuItem queryItem = new JMenuItem();
+        TextUtil.populate(queryItem, "EDIT QUERY");
         queryItem.addActionListener(queryAction);
         return queryItem;
     }
@@ -2734,7 +2790,7 @@ public class Admin extends WindowAdapter
     {
         // search a member
         String[] columns = Member.MODEL.getProperties();
-        String lastName = JOptionPane.showInputDialog(panel, TextUtil.getString(Member.SUKUNIMI) + "?", title, JOptionPane.QUESTION_MESSAGE);
+        String lastName = JOptionPane.showInputDialog(panel, TextUtil.getText(Member.SUKUNIMI) + "?", title, JOptionPane.QUESTION_MESSAGE);
         if (lastName == null)
         {
             return null;
@@ -2766,7 +2822,7 @@ public class Admin extends WindowAdapter
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                AnyDataObject member = chooseMember(TextUtil.getString("CHOOSE MEMBER"));
+                AnyDataObject member = chooseMember(TextUtil.getText("CHOOSE MEMBER"));
                 if (member != null)
                 {
                     swapPatrolShift(member);
@@ -2775,14 +2831,15 @@ public class Admin extends WindowAdapter
                 {
                     JOptionPane.showMessageDialog(
                             frame,
-                            TextUtil.getString("NO SELECTION"),
-                            TextUtil.getString("MESSAGE"),
+                            TextUtil.getText("NO SELECTION"),
+                            TextUtil.getText("MESSAGE"),
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         };
         swapAction = createActionListener(frame, swapAction);
-        JMenuItem swapItem = new JMenuItem(TextUtil.getString("SWAP PATROL SHIFT"));
+        JMenuItem swapItem = new JMenuItem();
+        TextUtil.populate(swapItem, "SWAP PATROL SHIFT");
         swapItem.addActionListener(swapAction);
         return swapItem;
     }
@@ -2795,7 +2852,7 @@ public class Admin extends WindowAdapter
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                AnyDataObject member = chooseMember(TextUtil.getString("CHOOSE PATROL SHIFT LOOSER"));
+                AnyDataObject member = chooseMember(TextUtil.getText("CHOOSE PATROL SHIFT LOOSER"));
                 if (member != null)
                 {
                     changePatrolShift(member);
@@ -2804,14 +2861,15 @@ public class Admin extends WindowAdapter
                 {
                     JOptionPane.showMessageDialog(
                             frame,
-                            TextUtil.getString("NO SELECTION"),
-                            TextUtil.getString("MESSAGE"),
+                            TextUtil.getText("NO SELECTION"),
+                            TextUtil.getText("MESSAGE"),
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         };
         swapAction = createActionListener(frame, swapAction);
-        JMenuItem swapItem = new JMenuItem(TextUtil.getString("CHANGE PATROL SHIFT"));
+        JMenuItem swapItem = new JMenuItem();
+        TextUtil.populate(swapItem, "CHANGE PATROL SHIFT");
         swapItem.addActionListener(swapAction);
         return swapItem;
     }
@@ -2838,7 +2896,8 @@ public class Admin extends WindowAdapter
             }
         };
         swapLogAction = createActionListener(frame, swapLogAction);
-        JMenuItem swapLogItem = new JMenuItem(TextUtil.getString("SWAP PATROL LOG"));
+        JMenuItem swapLogItem = new JMenuItem();
+        TextUtil.populate(swapLogItem, "SWAP PATROL LOG");
         swapLogItem.addActionListener(swapLogAction);
         return swapLogItem;
     }
@@ -2851,7 +2910,7 @@ public class Admin extends WindowAdapter
         DataObjectChooser<PatrolShift> ec = new DataObjectChooser<PatrolShift>(
                 PatrolShift.MODEL.view(Repository.PAIVA),
                 shiftList,
-                TextUtil.getString("PATROL SHIFT"),
+                TextUtil.getText("PATROL SHIFT"),
                 "CHOOSE");
         ec.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         List<PatrolShift> selectedShifts = ec.choose();
@@ -2882,12 +2941,12 @@ public class Admin extends WindowAdapter
             req.set(Repository.CREATOR, creator);
             Object[] options =
             {
-                TextUtil.getString("SWAP SHIFT"),
-                TextUtil.getString("EXCLUDE DATE"),
-                TextUtil.getString("DELETE PREVIOUS SWAP"),
-                TextUtil.getString("CANCEL")
+                TextUtil.getText("SWAP SHIFT"),
+                TextUtil.getText("EXCLUDE DATE"),
+                TextUtil.getText("DELETE PREVIOUS SWAP"),
+                TextUtil.getText("CANCEL")
             };
-            String msg = TextUtil.getString("SWAP OPTIONS");
+            String msg = TextUtil.getText("SWAP OPTIONS");
             try
             {
                 msg = dss.getShiftString(selectedShift.getEntity(), msg);
@@ -2912,19 +2971,19 @@ public class Admin extends WindowAdapter
                     case 0:
                         try
                         {
-                            msg = TextUtil.getString("SWAP CONFIRMATION");
+                            msg = TextUtil.getText("SWAP CONFIRMATION");
                             msg = dss.getShiftString(selectedShift.getEntity(), msg) + dateList(excluded);
-                            int confirm = JOptionPane.showConfirmDialog(frame, msg, TextUtil.getString("SWAP SHIFT"), JOptionPane.OK_CANCEL_OPTION);
+                            int confirm = JOptionPane.showConfirmDialog(frame, msg, TextUtil.getText("SWAP SHIFT"), JOptionPane.OK_CANCEL_OPTION);
                             if (JOptionPane.YES_OPTION == confirm)
                             {
                                 boolean ok = dss.swapShift(req);
                                 if (ok)
                                 {
-                                    JOptionPane.showMessageDialog(frame, TextUtil.getString("SwapOk"));
+                                    JOptionPane.showMessageDialog(frame, TextUtil.getText("SwapOk"));
                                 }
                                 else
                                 {
-                                    JOptionPane.showMessageDialog(frame, TextUtil.getString("SwapPending"));
+                                    JOptionPane.showMessageDialog(frame, TextUtil.getText("SwapPending"));
                                 }
                             }
                         }
@@ -2935,7 +2994,7 @@ public class Admin extends WindowAdapter
                         }
                         return;
                     case 1:
-                        Day d = DateChooser.chooseDate(TextUtil.getString("EXCLUDE DATE"), new Day(excluded.get(excluded.size() - 1)));
+                        Day d = DateChooser.chooseDate(TextUtil.getText("EXCLUDE DATE"), new Day(excluded.get(excluded.size() - 1)));
                         excluded.add(d.getValue());
                         break;
                     case 2:
@@ -2950,8 +3009,8 @@ public class Admin extends WindowAdapter
         {
             JOptionPane.showMessageDialog(
                     frame,
-                    TextUtil.getString("NO SELECTION"),
-                    TextUtil.getString("MESSAGE"),
+                    TextUtil.getText("NO SELECTION"),
+                    TextUtil.getText("MESSAGE"),
                     JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -2962,7 +3021,7 @@ public class Admin extends WindowAdapter
         PatrolShift selectedShift = choosePatrolShift(releasedUser);
         if (selectedShift != null)
         {
-            AnyDataObject executingUser = chooseMember(TextUtil.getString("CHOOSE PATROL SHIFT EXECUTER"));
+            AnyDataObject executingUser = chooseMember(TextUtil.getText("CHOOSE PATROL SHIFT EXECUTER"));
             if (executingUser != null)
             {
                 dss.changeShiftExecutor(selectedShift, executingUser);
@@ -2971,8 +3030,8 @@ public class Admin extends WindowAdapter
         }
         JOptionPane.showMessageDialog(
                 frame,
-                TextUtil.getString("NO SELECTION"),
-                TextUtil.getString("MESSAGE"),
+                TextUtil.getText("NO SELECTION"),
+                TextUtil.getText("MESSAGE"),
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -3058,7 +3117,7 @@ public class Admin extends WindowAdapter
                     String eventName = (String) existingRace.get(RaceSeries.EVENT);
                     if (JOptionPane.showConfirmDialog(
                             panel,
-                            TextUtil.getString("CONFIRM REPLACE") + " " + eventName) == JOptionPane.YES_OPTION)
+                            TextUtil.getText("CONFIRM REPLACE") + " " + eventName) == JOptionPane.YES_OPTION)
                     {
                         dss.putRace(rs, fleetList);
                         break;
@@ -3120,15 +3179,15 @@ public class Admin extends WindowAdapter
             String event = (String) raceSeries.get(RaceSeries.EVENT);
             if (JOptionPane.showConfirmDialog(
                     panel,
-                    TextUtil.getString("CONFIRM DELETE")) == JOptionPane.YES_OPTION)
+                    TextUtil.getText("CONFIRM DELETE")) == JOptionPane.YES_OPTION)
             {
                 int numberOfRaceEntriesFor = dss.getNumberOfRaceEntriesFor(raceSeries);
                 if (numberOfRaceEntriesFor > 0)
                 {
                     if (JOptionPane.showConfirmDialog(
                             panel,
-                            TextUtil.getString("CONFIRM WHOLE RACE DELETE"),
-                            TextUtil.getString("FLEET HAS ENTRIES"),
+                            TextUtil.getText("CONFIRM WHOLE RACE DELETE"),
+                            TextUtil.getText("FLEET HAS ENTRIES"),
                             JOptionPane.WARNING_MESSAGE
                             ) == JOptionPane.YES_OPTION)
                     {
@@ -3154,18 +3213,18 @@ public class Admin extends WindowAdapter
         List<Fleet> fleets = swf.getFleets();
         if (fleets.isEmpty())
         {
-            JOptionPane.showMessageDialog(frame, TextUtil.getString("SAILWAVEFILE PROBLEM"));
+            JOptionPane.showMessageDialog(frame, TextUtil.getText("SAILWAVEFILE PROBLEM"));
             return;
         }
         if (fleets.size() > 1)
         {
-            JOptionPane.showMessageDialog(frame, TextUtil.getString("FLEETS IN RANKING"));
+            JOptionPane.showMessageDialog(frame, TextUtil.getText("FLEETS IN RANKING"));
             return;
         }
         Fleet defFleet = swf.getDefaultFleet();
         if (defFleet == null)
         {
-            JOptionPane.showMessageDialog(frame, TextUtil.getString("SAILWAVEFILE PROBLEM"));
+            JOptionPane.showMessageDialog(frame, TextUtil.getText("SAILWAVEFILE PROBLEM"));
             return;
         }
         String ratingSystem = fleets.get(0).getRatingSystem();
@@ -3181,7 +3240,7 @@ public class Admin extends WindowAdapter
             String startTime = start.getTime();
             if (startTime == null)
             {
-                JOptionPane.showMessageDialog(frame, TextUtil.getString("SAILWAVEFILE PROBLEM"));
+                JOptionPane.showMessageDialog(frame, TextUtil.getText("SAILWAVEFILE PROBLEM"));
                 return;
             }
             if (startDate != null && !startDate.isEmpty())
@@ -3258,7 +3317,7 @@ public class Admin extends WindowAdapter
                     String eventName = (String) existingRace.get(RaceSeries.EVENT);
                     if (JOptionPane.showConfirmDialog(
                             panel,
-                            TextUtil.getString("CONFIRM REPLACE") + " " + eventName) == JOptionPane.YES_OPTION)
+                            TextUtil.getText("CONFIRM REPLACE") + " " + eventName) == JOptionPane.YES_OPTION)
                     {
                         dss.putRace(rs, startList);
                         break;
@@ -3288,7 +3347,7 @@ public class Admin extends WindowAdapter
         DataObjectChooser<RaceSeries> ec = new DataObjectChooser<RaceSeries>(
                 model,
                 raceList,
-                TextUtil.getString("RACE SERIES"),
+                TextUtil.getText("RACE SERIES"),
                 "CHOOSE");
         ec.setSelectAlways(true);
         ec.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -3305,7 +3364,7 @@ public class Admin extends WindowAdapter
 
     private List<RaceEntry> chooseCompetitors() throws EntityNotFoundException
     {
-        KeyTreeChooser chooser = new KeyTreeChooser(frame, TextUtil.getString("CHOOSE COMPETITORS"), dss, dss.getYearKey(), "Year", "RaceSeries", "RaceFleet");
+        KeyTreeChooser chooser = new KeyTreeChooser(frame, TextUtil.getText("CHOOSE COMPETITORS"), dss, dss.getYearKey(), "Year", "RaceSeries", "RaceFleet");
         DataObject selected = chooser.select();
         if (selected != null)
         {
@@ -3316,7 +3375,7 @@ public class Admin extends WindowAdapter
 
     private DataObject chooseRaceSeriesOrFleet() throws EntityNotFoundException
     {
-        KeyTreeChooser chooser = new KeyTreeChooser(frame, TextUtil.getString("CHOOSE RACE"), dss, dss.getRootKey(), "Root", "Year", "RaceSeries", "RaceFleet");
+        KeyTreeChooser chooser = new KeyTreeChooser(frame, TextUtil.getText("CHOOSE RACE"), dss, dss.getRootKey(), "Root", "Year", "RaceSeries", "RaceFleet");
         return chooser.select();
     }
 
@@ -3327,7 +3386,7 @@ public class Admin extends WindowAdapter
         DataObjectChooser<Attachment> ec = new DataObjectChooser<Attachment>(
                 Attachment.MODEL.view(Attachment.TITLE, Attachment.Filename),
                 attachments,
-                TextUtil.getString("ATTACHMENTS"),
+                TextUtil.getText("ATTACHMENTS"),
                 "CHOOSE");
         ec.setSelectAlways(true);
         return ec.choose();
@@ -3458,7 +3517,7 @@ public class Admin extends WindowAdapter
             options[index++] = spreadsheet.getTitle().getPlainText();
         }
         SpreadsheetEntry spreadsheet = null;
-        String opt = (String) JOptionPane.showInputDialog(frame, TextUtil.getString("GOOGLE DOCS SPREADSHEET"), "", JOptionPane.OK_CANCEL_OPTION, null, options, null);
+        String opt = (String) JOptionPane.showInputDialog(frame, TextUtil.getText("GOOGLE DOCS SPREADSHEET"), "", JOptionPane.OK_CANCEL_OPTION, null, options, null);
         for (int ii = 0; ii < options.length; ii++)
         {
             if (options[ii].equals(opt))
@@ -3523,26 +3582,26 @@ public class Admin extends WindowAdapter
                 BigDecimal entryRating = new BigDecimal(entryRatingStr.replace(',', '.'));
                 if (!entryRating.equals(listedRating))
                 {
-                    String privateNotes = TextUtil.getString("RATING DIFFERS");
+                    String privateNotes = TextUtil.getText("RATING DIFFERS");
                     privateNotes = String.format(privateNotes, entryRating, listedRating);
                     m2.put(RaceEntry.PRIVATENOTES, privateNotes);
                 }
                 else
                 {
-                    String privateNotes = TextUtil.getString("RATING OK");
+                    String privateNotes = TextUtil.getText("RATING OK");
                     m2.put(RaceEntry.PRIVATENOTES, privateNotes);
                 }
             }
             catch (NumberFormatException ex)
             {
-                String privateNotes = TextUtil.getString("RATING DIFFERS");
+                String privateNotes = TextUtil.getText("RATING DIFFERS");
                 privateNotes = String.format(privateNotes, entryRatingStr, listedRatingStr);
                 m2.put(RaceEntry.PRIVATENOTES, privateNotes);
             }
         }
         else
         {
-            String privateNotes = TextUtil.getString("NO RATING");
+            String privateNotes = TextUtil.getText("NO RATING");
             m2.put(RaceEntry.PRIVATENOTES, privateNotes);
         }
         return m2;

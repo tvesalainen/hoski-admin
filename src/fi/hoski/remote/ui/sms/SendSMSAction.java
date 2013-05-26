@@ -34,7 +34,7 @@ public class SendSMSAction extends AbstractSendAction<PhoneNumber>
 
     public SendSMSAction(String username, String password)
     {
-        super(TextUtil.getString("SEND SMS"));
+        super(TextUtil.getText("SEND SMS"));
         smsService = new ZonerSMSService(username, password);
     }
 
@@ -51,7 +51,7 @@ public class SendSMSAction extends AbstractSendAction<PhoneNumber>
             }
             else
             {
-                throw new IOException(TextUtil.getString("EMPTY MESSAGE"));
+                throw new IOException(TextUtil.getText("EMPTY MESSAGE"));
             }
         }
         catch (SMSException ex)

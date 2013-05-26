@@ -19,6 +19,10 @@ package fi.hoski.remote.ui;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 /**
  * @author Timo Vesalainen
@@ -29,7 +33,38 @@ public class TextUtil
     private static final ResourceBundle r2 = ResourceBundle.getBundle("fi/hoski/datastore/repository/fields");
     private static final ResourceBundle[] bundles = new ResourceBundle[] { r1, r2 };
     
-    public static String getString(String key)
+    public static void populate(JMenu menu, String key)
+    {
+        menu.setText(getText(key));
+        menu.setToolTipText(getTooltipText(key));
+    }
+    public static void populate(JMenuItem menuItem, String key)
+    {
+        menuItem.setText(getText(key));
+        menuItem.setToolTipText(getTooltipText(key));
+    }
+    public static void populate(JButton button, String key)
+    {
+        button.setText(getText(key));
+        button.setToolTipText(getTooltipText(key));
+    }
+    public static String getTooltipText(String key)
+    {
+        String ttkey = key+" TT";
+        for (ResourceBundle rb : bundles)
+        {
+            try
+            {
+                return rb.getString(ttkey);
+            }
+            catch (MissingResourceException ex)
+            {
+                
+            }
+        }
+        return null;
+    }
+    public static String getText(String key)
     {
         for (ResourceBundle rb : bundles)
         {
