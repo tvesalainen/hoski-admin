@@ -76,6 +76,7 @@ public class EventEditor implements ActionListener, DataObjectObserver
             try
             {
                 dss.put(event);
+                dss.createMissingEventTypes();
             }
             catch (Exception ex)
             {

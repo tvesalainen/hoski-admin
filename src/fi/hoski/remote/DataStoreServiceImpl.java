@@ -821,4 +821,10 @@ public class DataStoreServiceImpl implements DataStoreService
         return races.getNumberOfRaceEntriesFor(race);
     }
 
+    @Override
+    public void createMissingEventTypes()
+    {
+        events.createMissingEventTypes();
+    }
+
 }
