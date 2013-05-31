@@ -45,7 +45,7 @@ public class DialogUtil
         JPanel panel = new JPanel(new SpringLayout());
         JScrollPane scrollPane = new JScrollPane(panel);
         dialog.add(scrollPane, layout);
-        URL url = dataObject.getClass().getResource("/fi/hoski/remote/ui/images/calendar.png");
+        URL url = DialogUtil.class.getResource("/fi/hoski/remote/ui/images/calendar.png");
         ImageIcon icon = new ImageIcon(url);
         for (String property : model.getProperties())
         {
