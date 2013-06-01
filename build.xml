@@ -37,7 +37,7 @@
   </target>
 
   <!-- Compile servlets and make language translation -->
-  <target name="build" depends="init">
+  <target name="build" depends="init,hoskilib">
     <mkdir dir="build"/>
 
     <tstamp>
@@ -105,6 +105,11 @@ public class Version
         <arg value="HelsinkiRegatta.properties"/>
     </java>
   </target>
+  
+    <target name="hoskilib" depends="init"
+          description="Creates hoskilib">
+        <ant dir="${hoskilib.path}"/>
+    </target>
   
   <!-- Cleans all by removing build directories. -->
   <target name="clean" depends="init"
