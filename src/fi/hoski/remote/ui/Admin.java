@@ -1332,7 +1332,17 @@ public class Admin extends WindowAdapter
             int rn = Integer.parseInt(reference.substring(0, reference.length() - 1));
             RaceEntry raceEntry = dss.raceEntryForReference(rn);
             Double fee = (Double) raceEntry.get(RaceEntry.FEE);
-            String paidStr = JOptionPane.showInputDialog(frame, "<html>" + raceEntry.getFieldsAsHtmlTable() + "</html>", fee);
+            String fieldsAsHtmlTable = raceEntry.getFieldsAsHtmlTable(
+                    RaceEntry.FLEET,
+                    RaceEntry.HELMNAME,
+                    RaceEntry.HELMADDRESS,
+                    RaceEntry.CLUB,
+                    RaceEntry.HELMEMAIL,
+                    RaceEntry.HELMPHONE,
+                    RaceEntry.FEE,
+                    RaceEntry.PAID
+                    );
+            String paidStr = JOptionPane.showInputDialog(frame, "<html>" + fieldsAsHtmlTable + "</html>", fee);
             if (paidStr != null)
             {
                 try
