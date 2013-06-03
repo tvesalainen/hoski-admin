@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import fi.hoski.datastore.RemoteAppEngine;
 import fi.hoski.datastore.SMSNotConfiguredException;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,6 +34,7 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.SynchronousQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  * @author Timo Vesalainen
@@ -55,6 +57,7 @@ public class DataStoreProxy implements Runnable, InvocationHandler
     {
         thread = new Thread(this, getClass().getName());
         thread.setDaemon(true);
+        thread.setUncaughtExceptionHandler(new ExceptionHandler());
         thread.start();
         proxy = (DataStoreService) Proxy.newProxyInstance(
                 DataStoreService.class.getClassLoader(),
@@ -210,5 +213,22 @@ public class DataStoreProxy implements Runnable, InvocationHandler
         {
             this.throwable = throwable;
         }
+    }
+    private static class ExceptionHandler implements UncaughtExceptionHandler
+    {
+
+        @Override
+        public void uncaughtException(Thread t, Throwable e)
+        {
+            e.printStackTrace();  // TODO logging
+            String message = e.getMessage();
+            if (message == null || message.isEmpty())
+            {
+                message = "Fatal: "+e.getClass();
+            }
+            JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        }
+        
     }
 }
