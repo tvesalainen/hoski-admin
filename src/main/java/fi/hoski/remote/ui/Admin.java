@@ -156,10 +156,11 @@ public class Admin extends WindowAdapter
     /**
      * Initializes frame
      */
-    private void initFrame() throws EntityNotFoundException, MalformedURLException
+    private void initFrame() throws EntityNotFoundException, MalformedURLException, IOException
     {
         Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandler());
-        frame = new JFrame(TextUtil.getText("ADMIN") + " " + creator + " / " + server + " Version: " + Version.version());
+        ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
+        frame = new JFrame(TextUtil.getText("ADMIN") + " " + creator + " / " + server + " Version: " + applicationProperties.getString("version"));
         frame.addWindowListener(this);
         panel = new JPanel(new BorderLayout());
         frame.add(panel);
