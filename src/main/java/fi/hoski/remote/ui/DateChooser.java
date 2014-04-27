@@ -52,6 +52,8 @@ public class DateChooser extends AbstractTableModel
         this.cal = cal;
         this.symbols = symbols;
         
+        final DateChooser t = this;
+        
         String longest = "";
         for (String m : symbols.getMonths())
         {
@@ -108,7 +110,7 @@ public class DateChooser extends AbstractTableModel
             {
                 if (isHolyday(row, column))
                 {
-                    return getCellRenderer();
+                    return t.getCellRenderer();
                 }
                 else
                 {

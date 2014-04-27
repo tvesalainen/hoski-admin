@@ -1,13 +1,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>    
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.hoski</groupId>
     <artifactId>hoski-admin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
-    <name>hoskiadmin</name>
-    <url>http://hoski.fi/</url>
+    <name>Hoski Admin</name>
+    <description>
+        Hoski Admin is a java application in remote connection Google App Engine.
+        Application is used for sailing clubs back office work.
+    </description>
+    <url>https://github.com/tvesalainen/${project.artifactId}</url>
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License, Version 3.0</name>
+            <url>http://www.gnu.org/licenses</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git://github.com/tvesalainen/${project.artifactId}</connection>
+        <developerConnection>scm:git:git://github.com/tvesalainen/${project.artifactId}</developerConnection>
+        <url>https://github.com/tvesalainen/${project.artifactId}</url>
+    </scm>    
+    <developers>
+        <developer>
+            <name>Timo Vesalainen</name>
+            <email>timo.vesalainen@iki.fi</email>
+            <url>https://github.com/tvesalainen</url>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
@@ -17,9 +45,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>fi.hoski</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>hoski-lib</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>    
         <dependency>
             <groupId>com.google.gdata</groupId>
@@ -63,7 +91,6 @@
                             <key>myproperty</key>
                             <value>myvalue</value>
                         </systemProperty>
-                        ...
                     </systemProperties>
                 </configuration>
             </plugin>
@@ -93,6 +120,20 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>        
         </plugins>
     </build>
 </project>

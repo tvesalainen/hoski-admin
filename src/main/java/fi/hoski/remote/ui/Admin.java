@@ -24,7 +24,6 @@ import fi.hoski.sailwave.SailWaveFile;
 import com.google.appengine.api.datastore.Blob;
 import fi.hoski.remote.DataStoreService;
 import fi.hoski.remote.DataStoreProxy;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
@@ -3651,14 +3650,16 @@ public class Admin extends WindowAdapter
         try
         {
             Properties properties = new Properties();
-            if (args.length == 0)
+            if (args.length != 0)
             {
-                System.err.println("usage: ... <properties>");
-                System.exit(-1);
-            }
-            try (InputStream pFile = new FileInputStream(args[0]))
-            {
-                properties.load(pFile);
+                try (InputStream pFile = new FileInputStream(args[0]))
+                {
+                    properties.load(pFile);
+                }
+                catch (FileNotFoundException ex)
+                {
+                    
+                }
             }
             boolean savePassword = Boolean.valueOf(properties.getProperty(ServerProperties.SavePassword));
             properties.remove(ServerProperties.SavePassword);

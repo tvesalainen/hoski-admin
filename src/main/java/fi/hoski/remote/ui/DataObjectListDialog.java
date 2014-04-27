@@ -63,8 +63,11 @@ public class DataObjectListDialog<T extends DataObject> extends JDialog
         this.title = title;
         this.list = list;
         this.model = model;
+        
+        final DataObjectListDialog<T> t = this;
+        
         //setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        DataObjectListTableModel<T> etm = new DataObjectListTableModel<T>(model, list);
+        DataObjectListTableModel<T> etm = new DataObjectListTableModel<>(model, list);
         table = new FitTable(etm);
         TableSelectionHandler tsh = new TableSelectionHandler(table);
         JScrollPane scrollPane = new JScrollPane(table);
@@ -76,7 +79,7 @@ public class DataObjectListDialog<T extends DataObject> extends JDialog
             @Override
             protected boolean selected(int row, int col)
             {
-                selected();
+                t.selected();
                 return true;
             }
         };
