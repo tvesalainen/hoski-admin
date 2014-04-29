@@ -3169,10 +3169,10 @@ public class Admin extends WindowAdapter
             {
                 swf.setEvent((String) raceSeries.get(RaceSeries.EVENT));
                 swf.setVenue((String) raceSeries.get(RaceSeries.RACE_AREA));
-                Text notes = (Text) raceSeries.get(RaceSeries.NOTES);
+                String notes = (String) raceSeries.get(RaceSeries.NOTES);
                 if (notes != null)
                 {
-                    swf.setNotes(notes.getValue());
+                    swf.setNotes(notes);
                 }
                 swf.updateFleets(fleetList);
                 raceSeries.set(RaceSeries.SAILWAVEFILE, swf.getBytes());
