@@ -3660,7 +3660,13 @@ public class Admin extends WindowAdapter
                 {
                     
                 }
+            } else {
+                InputStream defaults = this.getClass().getResourceAsStream("/default.properties");
+                if (defaults != null) {
+                    properties.load(defaults);
+                }
             }
+
             boolean savePassword = Boolean.valueOf(properties.getProperty(ServerProperties.SavePassword));
             properties.remove(ServerProperties.SavePassword);
             ServerProperties sp = new ServerProperties(properties);
