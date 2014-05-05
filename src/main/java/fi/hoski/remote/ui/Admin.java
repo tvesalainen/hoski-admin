@@ -3661,10 +3661,7 @@ public class Admin extends WindowAdapter
                     
                 }
             }
-            boolean savePassword = Boolean.valueOf(properties.getProperty(ServerProperties.SavePassword));
-            properties.remove(ServerProperties.SavePassword);
             ServerProperties sp = new ServerProperties(properties);
-            sp.setSavePassword(savePassword);
             DataObjectDialog<ServerProperties> dod = new DataObjectDialog<>(
                     null, 
                     sp.getModel().hide(ServerProperties.Tables, ServerProperties.SupportsZonerSMS, ServerProperties.SuperUser), 

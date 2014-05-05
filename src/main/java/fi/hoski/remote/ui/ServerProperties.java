@@ -34,7 +34,6 @@ public final class ServerProperties extends DataObject
     public static final String Server = "remoteserver";
     public static final String Username = "remoteuser";
     public static final String Password = "remotepassword";
-    public static final String SavePassword = "savepassword";
     public static final String Tables = "tables";
     public static final String SuperUser = "super-user";
     public static final String SupportsZonerSMS = "supports-zoner-sms";
@@ -47,7 +46,6 @@ public final class ServerProperties extends DataObject
         Model.property(Username);
         Model.property(Password);
         Model.setPassword(Password);
-        Model.property(SavePassword, String.class);
         Model.property(Tables);
         Model.property(SuperUser, String.class);
         Model.property(SupportsZonerSMS, String.class);
@@ -136,14 +134,6 @@ public final class ServerProperties extends DataObject
         set(Server, server);
     }
 
-    public void setSavePassword(boolean save)
-    {
-        set(SavePassword, save);
-    }
-    public boolean isSavePassword()
-    {
-        return Boolean.parseBoolean((String)get(SavePassword));
-    }
     public boolean isZonerSMSSupported()
     {
         return Boolean.parseBoolean((String)get(SupportsZonerSMS));
