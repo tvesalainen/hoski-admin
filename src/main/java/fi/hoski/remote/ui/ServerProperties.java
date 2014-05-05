@@ -27,7 +27,7 @@ import java.util.Properties;
 /**
  * @author Timo Vesalainen
  */
-public class ServerProperties extends DataObject
+public final class ServerProperties extends DataObject
 {
     public static final String Kind = "ServerCredentials";
     
@@ -56,6 +56,18 @@ public class ServerProperties extends DataObject
     public ServerProperties(Properties properties)
     {
         super(new MapData(Model, properties));
+        String server = getServer();
+        if (server == null || server.isEmpty())
+        {
+            server = LastInput.get(Server);
+            setServer(server);
+        }
+        String username = getUsername();
+        if (username == null || username.isEmpty())
+        {
+            username = LastInput.get(Username);
+            setUsername(username);
+        }
     }
 
     public Properties getProperties()
@@ -80,6 +92,20 @@ public class ServerProperties extends DataObject
             return new String[]{};
         }
     }
+
+    @Override
+    public void set(String property, Object value)
+    {
+        super.set(property, value);
+        switch (property)
+        {
+            case Server:
+            case Username:
+                LastInput.set(property, (String) value);
+                break;
+        }
+    }
+    
     public String getPassword()
     {
         return (String) get(Password);
