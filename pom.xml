@@ -47,7 +47,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>hoski-lib</artifactId>
-            <version>1.0.2</version>
+            <version>[1.0.3,]</version>
         </dependency>    
         <dependency>
             <groupId>com.google.gdata</groupId>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>org.vesalainen.dsql</groupId>
             <artifactId>dsql</artifactId>
-            <version>1.0.0</version>
+            <version>[1.0.0,]</version>
         </dependency>    
     </dependencies>
 

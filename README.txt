@@ -1,20 +1,30 @@
+HoskiAdmin is a java application for sailing club back office work.
 
-Runtime installation
-====================
 
-Download intallation zip-file from 
-https://hsk-members.appspot.com/RaceAdmin.zip
+See Google App Engine documents at https://developers.google.com/appengine
 
-Zip files contents will expand to c:\RaceAdmin directory
+See dependencies at pom.xml.
 
-Development
-===========
+Compiling
+---------
+mvn install
 
-Needed jar files are in installation directorys ./lib subdirectory.
+Deployment
+----------
 
-HoskiAdmin source files are in https://github.com/tvesalainen/hoski-admin.git
+Commit to git
+-------------
 
-HoskiLib source files are in https://github.com/tvesalainen/hoski-lib.git
+Change <version>1.0.3</version> 
 
-Good Luck!
+in pom.xml
 
+Deploy to Maven Central Repository
+----------------------------------
+
+See http://central.sonatype.org/ how to create environment for deployment
+
+Run:
+
+mvn clean:clean javadoc:jar source:jar deploy
+ 
