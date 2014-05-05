@@ -26,10 +26,7 @@
 package fi.hoski.remote.ui;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
+import java.util.prefs.Preferences;
 
 /**
  *
@@ -37,26 +34,8 @@ import java.util.Properties;
  */
 public class LastInput
 {
-    public static final String FILENAME = ".lastinput.xml";
+    private static final Preferences preferences = Preferences.userNodeForPackage(LastInput.class);
     
-    private static File file = new File(System.getProperty("user.home"), FILENAME);
-    private static Properties data = new Properties();
-    
-    static
-    {
-        if (file.exists())
-        {
-            try
-            {
-                data.loadFromXML(new FileInputStream(file));
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public static File getFile(String key)
     {
         String filename = get(key);
@@ -112,45 +91,16 @@ public class LastInput
     
     public static String get(String key)
     {
-        String ss = data.getProperty(key);
-        if (ss != null)
-        {
-            return ss;
-        }
-        return "";
+        return preferences.get(key, "");
     }
     
     public static void set(String key, String value)
     {
-        String ss = data.getProperty(key);
-        if (!value.equals(ss))
-        {
-            data.setProperty(key, value);
-            try
-            {
-                data.storeToXML(new FileOutputStream(file), key);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
+        preferences.put(key, value);
     }
 
     public static void remove(String key)
     {
-        String ss = data.getProperty(key);
-        if (ss != null)
-        {
-            data.remove(key);
-            try
-            {
-                data.storeToXML(new FileOutputStream(file), key);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
+        preferences.remove(key);
     }
 }
