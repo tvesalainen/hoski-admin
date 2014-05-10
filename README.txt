@@ -28,3 +28,7 @@ Run:
 
 mvn clean:clean javadoc:jar source:jar deploy
  
+Pre-compiled jars
+-----------------
+
+http://search.maven.org/#search|ga|1|fi.hoski
