@@ -101,18 +101,8 @@ public class Admin extends WindowAdapter
     private boolean accessUser;
     private String safeTitle;
     
-    static
-    {
-        try
-        {
-            SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full");
-        }
-        catch (MalformedURLException ex)
-        {
-            throw new IllegalArgumentException(ex);
-        }
-    }
     private WorkBench workBench;
+    private boolean isRaceAdmin;
 
     public Admin(ServerProperties serverProperties) throws EntityNotFoundException, IOException, SMSException
     {
@@ -136,6 +126,7 @@ public class Admin extends WindowAdapter
             }
         }
         privileged = serverProperties.isSuperUser();
+        isRaceAdmin = dss.isRaceAdmin(creator+"@gmail.com");
         try
         {
             new SqlConnection(serverProperties.getProperties());
@@ -248,14 +239,20 @@ public class Admin extends WindowAdapter
         JMenu raceMenu = new JMenu();
         TextUtil.populate(raceMenu, "RACES");
         menuBar.add(raceMenu);
-        raceMenu.add(menuItemUploadRaceSeries());
-        raceMenu.add(menuItemEditRaceSeries());
-        raceMenu.add(menuItemRemoveRaceSeries());
+        if (isRaceAdmin)
+        {
+            raceMenu.add(menuItemUploadRaceSeries());
+            raceMenu.add(menuItemEditRaceSeries());
+            raceMenu.add(menuItemRemoveRaceSeries());
+        }
         raceMenu.add(menuItemDownloadCompetitorsForSailwave());
         raceMenu.add(menuItemInsertCompetitorsToSailwave());
         raceMenu.add(menuItemDownloadCompetitorsAsCSV());
         raceMenu.addSeparator();
-        raceMenu.add(menuItemUploadRanking());
+        if (isRaceAdmin)
+        {
+            raceMenu.add(menuItemUploadRanking());
+        }
         raceMenu.addSeparator();
         raceMenu.add(menuItemRaceEmail());
         if (serverProperties.isZonerSMSSupported())
