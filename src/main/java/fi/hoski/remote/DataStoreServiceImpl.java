@@ -827,4 +827,10 @@ public class DataStoreServiceImpl implements DataStoreService
         events.createMissingEventTypes();
     }
 
+    @Override
+    public boolean isRaceAdmin(String email)
+    {
+        return races.isRaceAdmin(email);
+    }
+
 }
