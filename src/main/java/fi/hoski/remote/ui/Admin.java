@@ -27,11 +27,6 @@ import fi.hoski.remote.DataStoreProxy;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
-import com.google.gdata.client.spreadsheet.SpreadsheetService;
-import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
-import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
-import com.google.gdata.util.AuthenticationException;
-import com.google.gdata.util.ServiceException;
 import fi.hoski.datastore.*;
 import fi.hoski.datastore.repository.*;
 import fi.hoski.datastore.repository.Attachment.Type;
@@ -259,8 +254,6 @@ public class Admin extends WindowAdapter
         raceMenu.add(menuItemDownloadCompetitorsForSailwave());
         raceMenu.add(menuItemInsertCompetitorsToSailwave());
         raceMenu.add(menuItemDownloadCompetitorsAsCVS());
-        raceMenu.add(menuItemCreatePLSGoogleDocs());
-        raceMenu.add(menuItemCreateToTGoogleDocs());
         raceMenu.addSeparator();
         raceMenu.add(menuItemUploadRanking());
         raceMenu.addSeparator();
@@ -981,60 +974,6 @@ public class Admin extends WindowAdapter
         downloadCompetitorsAsCVSAction = createActionListener(frame, downloadCompetitorsAsCVSAction);
         downloadRaceCompetitorsAsCVS.addActionListener(downloadCompetitorsAsCVSAction);
         return downloadRaceCompetitorsAsCVS;
-    }
-
-    private JMenuItem menuItemCreatePLSGoogleDocs()
-    {
-        // download series
-        JMenuItem createPLSGoogleDocs = new JMenuItem();
-        TextUtil.populate(createPLSGoogleDocs, "CREATE PLS GOOGLE DOCS");
-        ActionListener createPLSGoogleDocsAction = new ActionListener()
-        {
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                try
-                {
-                    createPLSSpreadsheet();
-                }
-                catch (Exception ex)
-                {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(frame, ex.getMessage());
-                }
-            }
-        };
-        createPLSGoogleDocsAction = createActionListener(frame, createPLSGoogleDocsAction);
-        createPLSGoogleDocs.addActionListener(createPLSGoogleDocsAction);
-        return createPLSGoogleDocs;
-    }
-
-    private JMenuItem menuItemCreateToTGoogleDocs()
-    {
-        // download series
-        JMenuItem createToTGoogleDocs = new JMenuItem();
-        TextUtil.populate(createToTGoogleDocs, "CREATE TOT GOOGLE DOCS");
-        ActionListener createToTGoogleDocsAction = new ActionListener()
-        {
-
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                try
-                {
-                    createToTSpreadsheet();
-                }
-                catch (Exception ex)
-                {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(frame, ex.getMessage());
-                }
-            }
-        };
-        createToTGoogleDocsAction = createActionListener(frame, createToTGoogleDocsAction);
-        createToTGoogleDocs.addActionListener(createToTGoogleDocsAction);
-        return createToTGoogleDocs;
     }
 
     private JMenuItem menuItemRaceEmail()
@@ -3468,21 +3407,6 @@ public class Admin extends WindowAdapter
         }
     }
 
-    private void createPLSSpreadsheet() throws IOException, EntityNotFoundException, JSONException, AuthenticationException, ServiceException
-    {
-        List<RaceEntry> competitors = chooseCompetitors();
-        SpreadsheetService service = new SpreadsheetService("MySpreadsheetIntegration-v1");
-        service.setUserCredentials(serverProperties.getUsername(), serverProperties.getPassword());
-
-        SpreadsheetEntry spreadsheet = chooseSpreadsheet(service);
-        if (spreadsheet != null)
-        {
-            PLSSpreadsheet plsSheet = new PLSSpreadsheet(service, spreadsheet);
-            fillPLSRatings(competitors);
-            plsSheet.fill(competitors);
-        }
-    }
-
     private void fillPLSRatings(List<RaceEntry> competitors) throws IOException, JSONException
     {
         for (RaceEntry entry : competitors)
@@ -3512,44 +3436,6 @@ public class Admin extends WindowAdapter
                     entry.set(RaceEntry.RATING, rating);
                 }
             }
-        }
-    }
-
-    private SpreadsheetEntry chooseSpreadsheet(SpreadsheetService service) throws IOException, ServiceException
-    {
-        // Make a request to the API and get all spreadsheets.
-        SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, SpreadsheetFeed.class);
-        List<SpreadsheetEntry> spreadsheets = feed.getEntries();
-        String[] options = new String[spreadsheets.size()];
-        int index = 0;
-        for (SpreadsheetEntry spreadsheet : spreadsheets)
-        {
-            options[index++] = spreadsheet.getTitle().getPlainText();
-        }
-        SpreadsheetEntry spreadsheet = null;
-        String opt = (String) JOptionPane.showInputDialog(frame, TextUtil.getText("GOOGLE DOCS SPREADSHEET"), "", JOptionPane.OK_CANCEL_OPTION, null, options, null);
-        for (int ii = 0; ii < options.length; ii++)
-        {
-            if (options[ii].equals(opt))
-            {
-                spreadsheet = spreadsheets.get(ii);
-                break;
-            }
-        }
-        return spreadsheet;
-    }
-    private void createToTSpreadsheet() throws IOException, EntityNotFoundException, JSONException, AuthenticationException, ServiceException
-    {
-        List<RaceEntry> competitors = chooseCompetitors();
-        SpreadsheetService service = new SpreadsheetService("MySpreadsheetIntegration-v1");
-        service.setUserCredentials(serverProperties.getUsername(), serverProperties.getPassword());
-        
-        SpreadsheetEntry spreadsheet = chooseSpreadsheet(service);
-        if (spreadsheet != null)
-        {
-            ToTSpreadsheet totSheet = new ToTSpreadsheet(service, spreadsheet);
-            updateRatings(competitors);
-            totSheet.fill(competitors);
         }
     }
 
