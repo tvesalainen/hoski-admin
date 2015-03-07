@@ -3407,38 +3407,6 @@ public class Admin extends WindowAdapter
         }
     }
 
-    private void fillPLSRatings(List<RaceEntry> competitors) throws IOException, JSONException
-    {
-        for (RaceEntry entry : competitors)
-        {
-            JSONObject json = getRating("ORC", entry.getNationality(), entry.getNumber(), null);
-            if (json != null)
-            {
-                entry.set(RaceEntry.RATING, json.getString(BoatInfo.RATING));
-                entry.set(RaceEntry.PLDO, json.getString(RaceEntry.PLDO));
-                entry.set(RaceEntry.PLTO, json.getString(RaceEntry.PLTO));
-            }
-        }
-    }
-
-    private void updateRatings(List<RaceEntry> competitors) throws IOException, JSONException
-    {
-        for (RaceEntry entry : competitors)
-        {
-            String fleet = (String) entry.get(RaceEntry.FLEET);
-            String type = (String) entry.get(RaceEntry.CLASS);
-            JSONObject json = getRating(fleet, entry.getNationality(), entry.getNumber(), type);
-            if (json != null)
-            {
-                String rating = json.getString(BoatInfo.RATING);
-                if (rating != null && !rating.isEmpty())
-                {
-                    entry.set(RaceEntry.RATING, rating);
-                }
-            }
-        }
-    }
-
     private Map<String, Object> checkRating(Map<String, Object> map) throws IOException, JSONException
     {
         String fleet = (String) map.get(RaceEntry.FLEET);
