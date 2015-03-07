@@ -253,7 +253,7 @@ public class Admin extends WindowAdapter
         raceMenu.add(menuItemRemoveRaceSeries());
         raceMenu.add(menuItemDownloadCompetitorsForSailwave());
         raceMenu.add(menuItemInsertCompetitorsToSailwave());
-        raceMenu.add(menuItemDownloadCompetitorsAsCVS());
+        raceMenu.add(menuItemDownloadCompetitorsAsCSV());
         raceMenu.addSeparator();
         raceMenu.add(menuItemUploadRanking());
         raceMenu.addSeparator();
@@ -949,12 +949,12 @@ public class Admin extends WindowAdapter
         return insertRaceCompetitorsToSailwave;
     }
 
-    private JMenuItem menuItemDownloadCompetitorsAsCVS()
+    private JMenuItem menuItemDownloadCompetitorsAsCSV()
     {
         // download series
-        JMenuItem downloadRaceCompetitorsAsCVS = new JMenuItem();
-        TextUtil.populate(downloadRaceCompetitorsAsCVS, "DOWNLOAD COMPETITORS AS CVS");
-        ActionListener downloadCompetitorsAsCVSAction = new ActionListener()
+        JMenuItem downloadRaceCompetitorsAsCSV = new JMenuItem();
+        TextUtil.populate(downloadRaceCompetitorsAsCSV, "DOWNLOAD COMPETITORS AS CSV");
+        ActionListener downloadCompetitorsAsCSVAction = new ActionListener()
         {
 
             @Override
@@ -962,7 +962,7 @@ public class Admin extends WindowAdapter
             {
                 try
                 {
-                    downloadCompetitorsAsCVS();
+                    downloadCompetitorsAsCSV();
                 }
                 catch (EntityNotFoundException | IOException | JSONException ex)
                 {
@@ -971,9 +971,9 @@ public class Admin extends WindowAdapter
                 }
             }
         };
-        downloadCompetitorsAsCVSAction = createActionListener(frame, downloadCompetitorsAsCVSAction);
-        downloadRaceCompetitorsAsCVS.addActionListener(downloadCompetitorsAsCVSAction);
-        return downloadRaceCompetitorsAsCVS;
+        downloadCompetitorsAsCSVAction = createActionListener(frame, downloadCompetitorsAsCSVAction);
+        downloadRaceCompetitorsAsCSV.addActionListener(downloadCompetitorsAsCSVAction);
+        return downloadRaceCompetitorsAsCSV;
     }
 
     private JMenuItem menuItemRaceEmail()
@@ -3387,7 +3387,7 @@ public class Admin extends WindowAdapter
         swf.saveAs(selectedFile);
     }
 
-    private void downloadCompetitorsAsCVS() throws IOException, EntityNotFoundException, JSONException
+    private void downloadCompetitorsAsCSV() throws IOException, EntityNotFoundException, JSONException
     {
         List<RaceEntry> entryList = chooseCompetitors();
         if (entryList == null || entryList.isEmpty())
@@ -3396,13 +3396,13 @@ public class Admin extends WindowAdapter
         }
         // TODO check ratings
         RaceSeries raceSeries = (RaceSeries) entryList.get(0).getRaceSeries();
-        File selectedFile = saveFile(SAILWAVEDIR, raceSeries.getString(RaceSeries.EVENT) + ".cvs", ".cvs", "CVS");
+        File selectedFile = saveFile(SAILWAVEDIR, raceSeries.getString(RaceSeries.EVENT) + ".csv", ".csv", "CSV");
         if (selectedFile != null)
         {
             try (FileOutputStream fos = new FileOutputStream(selectedFile))
             {
                 DataObjectModel model = RaceEntry.MODEL.view(entryList);
-                DataObject.writeCVS(model, entryList, fos);
+                DataObject.writeCSV(model, entryList, fos);
             }
         }
     }
