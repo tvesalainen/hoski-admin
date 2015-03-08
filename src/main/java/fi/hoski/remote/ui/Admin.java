@@ -252,6 +252,8 @@ public class Admin extends WindowAdapter
         if (isRaceAdmin)
         {
             raceMenu.add(menuItemUploadRanking());
+            raceMenu.add(menuItemEditRanking());
+            raceMenu.add(menuItemRemoveRanking());
         }
         raceMenu.addSeparator();
         raceMenu.add(menuItemRaceEmail());
@@ -1360,6 +1362,24 @@ public class Admin extends WindowAdapter
         }
     }
 
+    private String convertString(Object ob)
+    {
+        if (ob == null)
+        {
+            return null;
+        }
+        if (ob instanceof String)
+        {
+            return (String)ob;
+        }
+        if (ob instanceof Text)
+        {
+            Text text = (Text) ob;
+            return text.getValue();
+        }
+        throw new IllegalArgumentException(ob+" not String or Text");
+    }
+
     private class FeeComparator implements Comparator<RaceEntry>
     {
 
@@ -1500,6 +1520,33 @@ public class Admin extends WindowAdapter
         return editRaceSeriesItem;
     }
 
+    private JMenuItem menuItemEditRanking()
+    {
+        // upload series
+        JMenuItem editRankingItem = new JMenuItem(TextUtil.getText("EDIT RANKING"));
+        TextUtil.populate(editRankingItem, "EDIT RANKING");
+        ActionListener editRankingAction = new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try
+                {
+                    editRanking();
+                }
+                catch (IOException | EntityNotFoundException ex)
+                {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, ex.getMessage());
+                }
+            }
+        };
+        editRankingAction = createActionListener(frame, editRankingAction);
+        editRankingItem.addActionListener(editRankingAction);
+        return editRankingItem;
+    }
+
     private JMenuItem menuItemRemoveRaceSeries()
     {
         // upload series
@@ -1525,6 +1572,33 @@ public class Admin extends WindowAdapter
         removeRaceSeriesAction = createActionListener(frame, removeRaceSeriesAction);
         removeRaceSeriesItem.addActionListener(removeRaceSeriesAction);
         return removeRaceSeriesItem;
+    }
+
+    private JMenuItem menuItemRemoveRanking()
+    {
+        // upload series
+        JMenuItem removeRankingItem = new JMenuItem(TextUtil.getText("REMOVE RANKING"));
+        TextUtil.populate(removeRankingItem, "REMOVE RANKING");
+        ActionListener removeRankingAction = new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try
+                {
+                    removeSeries();
+                }
+                catch (IOException | EntityNotFoundException ex)
+                {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(frame, ex.getMessage());
+                }
+            }
+        };
+        removeRankingAction = createActionListener(frame, removeRankingAction);
+        removeRankingItem.addActionListener(removeRankingAction);
+        return removeRankingItem;
     }
 
     private JMenuItem menuItemSync()
@@ -3033,10 +3107,10 @@ public class Admin extends WindowAdapter
         {
             swf.setEvent((String) rs.get(RaceSeries.EVENT));
             swf.setVenue((String) rs.get(RaceSeries.RACE_AREA));
-            Text notes = (Text) rs.get(RaceSeries.NOTES);
+            String notes = convertString(rs.get(RaceSeries.NOTES));
             if (notes != null)
             {
-                swf.setNotes(notes.getValue());
+                swf.setNotes(notes);
             }
             if (firstRace != null)
             {
@@ -3105,7 +3179,7 @@ public class Admin extends WindowAdapter
             {
                 swf.setEvent((String) raceSeries.get(RaceSeries.EVENT));
                 swf.setVenue((String) raceSeries.get(RaceSeries.RACE_AREA));
-                String notes = (String) raceSeries.get(RaceSeries.NOTES);
+                String notes = convertString(raceSeries.get(RaceSeries.NOTES));
                 if (notes != null)
                 {
                     swf.setNotes(notes);
@@ -3113,6 +3187,105 @@ public class Admin extends WindowAdapter
                 swf.updateFleets(fleetList);
                 raceSeries.set(RaceSeries.SAILWAVEFILE, swf.getBytes());
                 dss.putRace(raceSeries, fleetList);
+            }
+        }
+    }
+
+    private void editRanking() throws IOException, EntityNotFoundException
+    {
+        RaceSeries rs = chooseRace();
+        if (rs != null)
+        {
+            Blob swb = (Blob) rs.get(RaceSeries.SAILWAVEFILE);
+            SailWaveFile swf = new SailWaveFile(swb.getBytes());
+            List<Fleet> fleets = swf.getFleets();
+            Fleet defFleet = swf.getDefaultFleet();
+            if (defFleet == null)
+            {
+                JOptionPane.showMessageDialog(frame, TextUtil.getText("SAILWAVEFILE PROBLEM"));
+                return;
+            }
+            String ratingSystem = fleets.get(0).getRatingSystem();
+            List<RaceFleet> startList = new ArrayList<>();
+            Map<RaceFleet, Race> startMap = new HashMap<>();
+            for (Race start : swf.getRaces())
+            {
+                RaceFleet st = new RaceFleet(rs);
+                st.set(RaceFleet.Ranking, true);
+                st.set(RaceFleet.Fleet, defFleet.getRatingSystem());
+                startMap.put(st, start);
+                String startDate = start.getDate();
+                String startTime = start.getTime();
+                if (startTime == null)
+                {
+                    JOptionPane.showMessageDialog(frame, TextUtil.getText("SAILWAVEFILE PROBLEM"));
+                    return;
+                }
+                if (startDate != null && !startDate.isEmpty())
+                {
+                    Day sd = new Day(startDate);
+                    st.set(RaceFleet.EventDate, sd);
+                    st.set(RaceFleet.ClosingDate, sd);
+                }
+                if (startTime != null && !startTime.isEmpty())
+                {
+                    st.set(RaceFleet.StartTime, new Time(startTime));
+                }
+                st.set(RaceFleet.RatingSystem, ratingSystem);
+                startList.add(st);
+            }
+            DataObjectModel model = RaceSeries.MODEL.hide(
+                    RaceSeries.ID,
+                    RaceSeries.EventDate,
+                    RaceSeries.TO,
+                    RaceSeries.ClosingDate,
+                    RaceSeries.STARTTIME,
+                    RaceSeries.SAILWAVEFILE);
+            DataObjectModel listModel = RaceFleet.Model.hide(RaceFleet.Ranking, RaceFleet.SailWaveId);
+            RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, startList, swf);
+            rc.setEditable(RaceFleet.EventDate, RaceFleet.StartTime, RaceFleet.ClosingDate);
+            if (rc.edit())
+            {
+                Day from = null;
+                Day to = null;
+                for (RaceFleet start : startList)
+                {
+                    if (from == null)
+                    {
+                        from = (Day) start.get(RaceFleet.EventDate);
+                    }
+                    else
+                    {
+                        Day d = (Day) start.get(RaceFleet.EventDate);
+                        if (from.after(d))
+                        {
+                            from = d;
+                        }
+                    }
+                    if (to == null)
+                    {
+                        to = (Day) start.get(RaceFleet.EventDate);
+                    }
+                    else
+                    {
+                        Day d = (Day) start.get(RaceFleet.EventDate);
+                        if (to.before(d))
+                        {
+                            to = d;
+                        }
+                    }
+                    Race r = startMap.get(start);
+                    r.setDate(start.get(RaceFleet.EventDate).toString());
+                    r.setTime(start.get(RaceFleet.StartTime).toString());
+                }
+                rs.set(RaceSeries.EventDate, from);
+                rs.set(RaceSeries.TO, to);
+                swf.setEvent((String) rs.get(RaceSeries.EVENT));
+                swf.setVenue((String) rs.get(RaceSeries.RACE_AREA));
+                String notes = convertString(rs.get(RaceSeries.NOTES));
+                swf.setNotes(notes);
+                rs.set(RaceSeries.SAILWAVEFILE, swf.getBytes());
+                dss.putRace(rs, startList);
             }
         }
     }
@@ -3250,8 +3423,8 @@ public class Admin extends WindowAdapter
             rs.set(RaceSeries.TO, to);
             swf.setEvent((String) rs.get(RaceSeries.EVENT));
             swf.setVenue((String) rs.get(RaceSeries.RACE_AREA));
-            Text notes = (Text) rs.get(RaceSeries.NOTES);
-            swf.setNotes(notes.getValue());
+            String notes = convertString(rs.get(RaceSeries.NOTES));
+            swf.setNotes(notes);
             swf.saveAs(file);
             rs.set(RaceSeries.SAILWAVEFILE, swf.getBytes());
             while (true)
