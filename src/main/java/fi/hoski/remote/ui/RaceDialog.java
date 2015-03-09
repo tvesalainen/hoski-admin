@@ -52,6 +52,7 @@ public class RaceDialog extends JDialog implements DataObjectObserver
     private DataObjectListTableModel<RaceFleet> etm;
     private boolean accepted;
     private JTable table;
+    private final boolean isRanking;
 
     RaceDialog(
             JFrame frame, 
@@ -61,13 +62,15 @@ public class RaceDialog extends JDialog implements DataObjectObserver
             final RaceSeries raceSeries,
             final DataObjectModel listModel, 
             final List<RaceFleet> raceFleetList,
-            final SailWaveFile swf
+            final SailWaveFile swf,
+            final boolean isRanking
             )
     {
         super(frame, event);
         this.dss = dss;
         this.raceSeries = raceSeries;
         this.raceFleetList = raceFleetList;
+        this.isRanking = isRanking;
         componentMap = DialogUtil.createEditPane(this, model, raceSeries, BorderLayout.NORTH);
         
         etm = new DataObjectListTableModel<>(listModel, raceFleetList);
@@ -130,66 +133,69 @@ public class RaceDialog extends JDialog implements DataObjectObserver
         cancel.addActionListener(cancelAction);
         panel.add(cancel);
 
-        JButton addFleet = new JButton(uiBundle.getString("ADD FLEET"));
-        ActionListener addFleetAction = new ActionListener()
+        if (!isRanking)
         {
-            @Override
-            public void actionPerformed(ActionEvent e)
+            JButton addFleet = new JButton(uiBundle.getString("ADD FLEET"));
+            ActionListener addFleetAction = new ActionListener()
             {
-                int row = table.getSelectedRow();
-                if (row != -1)
+                @Override
+                public void actionPerformed(ActionEvent e)
                 {
-                    TableCellEditor cellEditor = table.getCellEditor();
-                    if (cellEditor != null)
+                    int row = table.getSelectedRow();
+                    if (row != -1)
                     {
-                        cellEditor.stopCellEditing();
-                    }
-                    RaceFleet rf = etm.getObject(row);
-                    int swid = rf.getSailWaveId();
-                    Fleet fleet = swf.getFleet(swid);
-                    Fleet copyFleet = swf.copyFleet(fleet);
-                    etm.add(rf.makeCopy(copyFleet.getNumber()));
-                }
-            }
-        };
-        addFleet.addActionListener(addFleetAction);
-        panel.add(addFleet);
-
-        JButton deleteFleet = new JButton(uiBundle.getString("DELETE FLEET"));
-        ActionListener deleteFleetAction = new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                int row = table.getSelectedRow();
-                if (row != -1)
-                {
-                    TableCellEditor cellEditor = table.getCellEditor();
-                    if (cellEditor != null)
-                    {
-                        cellEditor.stopCellEditing();
-                    }
-                    RaceFleet rf = etm.getObject(row);
-                    try
-                    {
-                        int numberOfRaceEntriesFor = dss.getNumberOfRaceEntriesFor(rf);
-                        if (numberOfRaceEntriesFor > 0)
+                        TableCellEditor cellEditor = table.getCellEditor();
+                        if (cellEditor != null)
                         {
-                            JOptionPane.showMessageDialog(rootPane, uiBundle.getString("FLEET HAS ENTRIES"), uiBundle.getString("UNABLE TO DELETE"), JOptionPane.ERROR_MESSAGE);
-                            return;
+                            cellEditor.stopCellEditing();
                         }
+                        RaceFleet rf = etm.getObject(row);
+                        int swid = rf.getSailWaveId();
+                        Fleet fleet = swf.getFleet(swid);
+                        Fleet copyFleet = swf.copyFleet(fleet);
+                        etm.add(rf.makeCopy(copyFleet.getNumber()));
                     }
-                    catch (EntityNotFoundException ex)
-                    {
-                        throw new IllegalArgumentException(ex);
-                    }
-                    etm.remove(rf);
                 }
-            }
-        };
-        deleteFleet.addActionListener(deleteFleetAction);
-        panel.add(deleteFleet);
+            };
+            addFleet.addActionListener(addFleetAction);
+            panel.add(addFleet);
 
+            JButton deleteFleet = new JButton(uiBundle.getString("DELETE FLEET"));
+            ActionListener deleteFleetAction = new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    int row = table.getSelectedRow();
+                    if (row != -1)
+                    {
+                        TableCellEditor cellEditor = table.getCellEditor();
+                        if (cellEditor != null)
+                        {
+                            cellEditor.stopCellEditing();
+                        }
+                        RaceFleet rf = etm.getObject(row);
+                        try
+                        {
+                            int numberOfRaceEntriesFor = dss.getNumberOfRaceEntriesFor(rf);
+                            if (numberOfRaceEntriesFor > 0)
+                            {
+                                JOptionPane.showMessageDialog(rootPane, uiBundle.getString("FLEET HAS ENTRIES"), uiBundle.getString("UNABLE TO DELETE"), JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                        }
+                        catch (EntityNotFoundException ex)
+                        {
+                            throw new IllegalArgumentException(ex);
+                        }
+                        etm.remove(rf);
+                    }
+                }
+            };
+            deleteFleet.addActionListener(deleteFleetAction);
+            panel.add(deleteFleet);
+        }
+        
         setLocationByPlatform(true);
         setModalityType(Dialog.ModalityType.TOOLKIT_MODAL);
         pack();

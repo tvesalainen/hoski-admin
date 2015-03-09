@@ -3101,7 +3101,7 @@ public class Admin extends WindowAdapter
                 RaceSeries.ID,
                 RaceSeries.SAILWAVEFILE);
         DataObjectModel listModel = RaceFleet.Model.hide(RaceFleet.RatingSystem, RaceFleet.ClosingDate, RaceFleet.ClosingDate2, RaceFleet.Ranking, RaceFleet.SailWaveId);
-        RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, fleetList, swf);
+        RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, fleetList, swf, false);
         rc.setEditable(listModel.getProperties());
         if (rc.edit())
         {
@@ -3173,7 +3173,7 @@ public class Admin extends WindowAdapter
                     RaceSeries.SAILWAVEFILE);
             String event = (String) raceSeries.get(RaceSeries.EVENT);
             DataObjectModel listModel = RaceFleet.Model.hide(RaceFleet.RatingSystem, RaceFleet.ClosingDate, RaceFleet.Ranking, RaceFleet.SailWaveId);
-            RaceDialog rd = new RaceDialog(frame, event, dss, model, raceSeries, listModel, fleetList, swf);
+            RaceDialog rd = new RaceDialog(frame, event, dss, model, raceSeries, listModel, fleetList, swf, false);
             rd.setEditable(listModel.getProperties());
             if (rd.edit())
             {
@@ -3242,7 +3242,7 @@ public class Admin extends WindowAdapter
                     RaceSeries.STARTTIME,
                     RaceSeries.SAILWAVEFILE);
             DataObjectModel listModel = RaceFleet.Model.hide(RaceFleet.Ranking, RaceFleet.SailWaveId);
-            RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, startList, swf);
+            RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, startList, swf, true);
             rc.setEditable(RaceFleet.EventDate, RaceFleet.StartTime, RaceFleet.ClosingDate);
             if (rc.edit())
             {
@@ -3383,7 +3383,7 @@ public class Admin extends WindowAdapter
                 RaceSeries.STARTTIME,
                 RaceSeries.SAILWAVEFILE);
         DataObjectModel listModel = RaceFleet.Model.hide(RaceFleet.Ranking, RaceFleet.SailWaveId);
-        RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, startList, swf);
+        RaceDialog rc = new RaceDialog(frame, swf.getEvent(), dss, model, rs, listModel, startList, swf, true);
         rc.setEditable(RaceFleet.EventDate, RaceFleet.StartTime, RaceFleet.ClosingDate);
         if (rc.edit())
         {
