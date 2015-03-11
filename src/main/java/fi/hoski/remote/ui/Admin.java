@@ -134,6 +134,10 @@ public class Admin extends WindowAdapter
         }
         catch (ClassNotFoundException | SQLException ex)
         {
+            if (privileged)
+            {
+                ex.printStackTrace();
+            }
         }
         initFrame();
     }
