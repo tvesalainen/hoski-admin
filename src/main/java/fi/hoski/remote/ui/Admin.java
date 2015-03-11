@@ -3139,7 +3139,7 @@ public class Admin extends WindowAdapter
                             panel,
                             TextUtil.getText("CONFIRM REPLACE") + " " + eventName) == JOptionPane.YES_OPTION)
                     {
-                        dss.putRace(rs, fleetList);
+                        dss.putRace(rs, fleetList, null);
                         break;
                     }
                     else
@@ -3151,7 +3151,7 @@ public class Admin extends WindowAdapter
                 }
                 else
                 {
-                    dss.putRace(rs, fleetList);
+                    dss.putRace(rs, fleetList, null);
                     break;
                 }
                 id++;
@@ -3167,6 +3167,7 @@ public class Admin extends WindowAdapter
             Blob swb = (Blob) raceSeries.get(RaceSeries.SAILWAVEFILE);
             SailWaveFile swf = new SailWaveFile(swb.getBytes());
             List<RaceFleet> fleetList = dss.getFleets(raceSeries);
+            FleetObserver fleetObserver = new FleetObserver(fleetList);
             DataObjectModel model = RaceSeries.MODEL.hide(
                     RaceSeries.ID,
                     RaceSeries.EventDate,
@@ -3186,7 +3187,7 @@ public class Admin extends WindowAdapter
                 }
                 swf.updateFleets(fleetList);
                 raceSeries.set(RaceSeries.SAILWAVEFILE, swf.getBytes());
-                dss.putRace(raceSeries, fleetList);
+                dss.putRace(raceSeries, fleetList, fleetObserver.getChangeMap());
             }
         }
     }
@@ -3234,6 +3235,7 @@ public class Admin extends WindowAdapter
                 st.set(RaceFleet.RatingSystem, ratingSystem);
                 startList.add(st);
             }
+            FleetObserver fleetObserver = new FleetObserver(startList);
             DataObjectModel model = RaceSeries.MODEL.hide(
                     RaceSeries.ID,
                     RaceSeries.EventDate,
@@ -3285,7 +3287,7 @@ public class Admin extends WindowAdapter
                 String notes = convertString(rs.get(RaceSeries.NOTES));
                 swf.setNotes(notes);
                 rs.set(RaceSeries.SAILWAVEFILE, swf.getBytes());
-                dss.putRace(rs, startList);
+                dss.putRace(rs, startList, fleetObserver.getChangeMap());
             }
         }
     }
@@ -3438,7 +3440,7 @@ public class Admin extends WindowAdapter
                             panel,
                             TextUtil.getText("CONFIRM REPLACE") + " " + eventName) == JOptionPane.YES_OPTION)
                     {
-                        dss.putRace(rs, startList);
+                        dss.putRace(rs, startList, null);
                         break;
                     }
                     else
@@ -3450,7 +3452,7 @@ public class Admin extends WindowAdapter
                 }
                 else
                 {
-                    dss.putRace(rs, startList);
+                    dss.putRace(rs, startList, null);
                     break;
                 }
                 id++;

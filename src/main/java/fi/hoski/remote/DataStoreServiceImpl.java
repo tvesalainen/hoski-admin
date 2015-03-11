@@ -608,10 +608,12 @@ public class DataStoreServiceImpl implements DataStoreService
      *
      * @param raceSeries
      * @param classList
+     * @param fleetKeys
      */
-    public void putRace(RaceSeries raceSeries, List<RaceFleet> classList)
+    @Override
+    public void putRace(RaceSeries raceSeries, List<RaceFleet> classList, Map<String, String> fleetKeys)
     {
-        races.putRace(raceSeries, classList);
+        races.putRace(raceSeries, classList, fleetKeys);
     }
 
     @Override
