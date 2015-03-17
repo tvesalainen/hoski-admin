@@ -185,7 +185,10 @@ public class Admin extends WindowAdapter
         {
             fileMenu.add(menuItemSync());
         }
-        fileMenu.add(menuItemTextMaintenence());
+        if (privileged || isRaceAdmin)
+        {
+            fileMenu.add(menuItemTextMaintenence());
+        }
         if (privileged)
         {
             fileMenu.add(menuItemTextUpload());
