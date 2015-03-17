@@ -129,6 +129,7 @@ public class Admin extends WindowAdapter
         isRaceAdmin = dss.isRaceAdmin(creator+"@gmail.com");
         try
         {
+            checkJavaVersion(serverProperties.getProperties());
             new SqlConnection(serverProperties.getProperties());
             accessUser = true;
         }
@@ -1385,6 +1386,18 @@ public class Admin extends WindowAdapter
             return text.getValue();
         }
         throw new IllegalArgumentException(ob+" not String or Text");
+    }
+
+    private void checkJavaVersion(Properties properties)
+    {
+        if (!properties.getProperty("databaseURL", "").isEmpty())
+        {
+            String javaVersion = System.getProperty("java.version", "");
+            if (!javaVersion.startsWith("1.7"))
+            {
+                JOptionPane.showMessageDialog(frame, "Java "+javaVersion+" ei toimi accessin kanssa!");
+            }
+        }
     }
 
     private class FeeComparator implements Comparator<RaceEntry>
