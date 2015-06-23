@@ -54,6 +54,10 @@ public class MailDialog extends JDialog
         
         final DataStoreService dss = DataStore.getDss();
         String fromStr = dss.getMessage(Messages.PASSWORDFROMADDRESS);
+        if (fromStr == null)
+        {
+            throw new IllegalArgumentException(Messages.PASSWORDFROMADDRESS+" missing from messages");
+        }
         final InternetAddress from = new InternetAddress(fromStr);
         
         // Subject
