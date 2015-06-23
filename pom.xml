@@ -3,12 +3,12 @@
     <parent>
         <groupId>fi.hoski</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.hoski</groupId>
     <artifactId>hoski-admin</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <packaging>jar</packaging>
 
     <name>Hoski Admin</name>
