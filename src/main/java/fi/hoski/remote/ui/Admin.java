@@ -126,7 +126,16 @@ public class Admin extends WindowAdapter
             }
         }
         privileged = serverProperties.isSuperUser();
-        isRaceAdmin = dss.isRaceAdmin(creator+"@gmail.com");
+        String email;
+        if (creator.endsWith("@gmail.com"))
+        {
+            email = creator;
+        }
+        else
+        {
+            email = creator+"@gmail.com";
+        }
+        isRaceAdmin = dss.isRaceAdmin(email);
         try
         {
             checkJavaVersion(serverProperties.getProperties());
