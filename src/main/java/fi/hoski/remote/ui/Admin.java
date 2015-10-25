@@ -3724,7 +3724,7 @@ public class Admin extends WindowAdapter
             if (dod.edit())
             {
                 String[] server = sp.getServer().split(",");
-                RemoteAppEngine.init(server[0], sp.getUsername(), sp.getPassword());
+                RemoteAppEngine.init(server[0]);
                 DataStoreProxy dsp = new DataStoreProxy(properties);
                 dsp.start();
                 Admin r = new Admin(sp);

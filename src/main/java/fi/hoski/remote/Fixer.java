@@ -43,7 +43,7 @@ public class Fixer
     {
         try
         {
-            RemoteAppEngine.init("hsk-members.appspot.com", "timo.vesalainen@gmail.com", "db7f3ea2");
+            RemoteAppEngine.init("hsk-members.appspot.com");
             RemoteAppEngine rae = new RemoteAppEngine()
             {
 

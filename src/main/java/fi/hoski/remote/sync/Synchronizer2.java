@@ -227,10 +227,8 @@ public class Synchronizer2
                 properties.load(pFile);
             }
             String server = properties.getProperty("remoteserver");
-            String user = properties.getProperty("remoteuser");
-            String password = properties.getProperty("remotepassword");
 
-            RemoteAppEngine.init(server, user, password);
+            RemoteAppEngine.init(server);
             RemoteAppEngine rae = new RemoteAppEngine<Object>()
             {
 

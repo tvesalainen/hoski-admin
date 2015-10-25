@@ -20,10 +20,7 @@ package fi.hoski.remote;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.PhoneNumber;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import fi.hoski.datastore.RemoteAppEngine;
@@ -32,8 +29,6 @@ import fi.hoski.datastore.repository.RaceSeries;
 import fi.hoski.sailwave.Fleet;
 import fi.hoski.sailwave.SailWaveFile;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 
 /**
  * @author Timo Vesalainen
@@ -48,7 +43,7 @@ public class Fixer2
     {
         try
         {
-            RemoteAppEngine.init("helsinkiregatta.appspot.com", "timo.vesalainen@gmail.com", "secret password");
+            RemoteAppEngine.init("helsinkiregatta.appspot.com");
             RemoteAppEngine rae = new RemoteAppEngine()
             {
 
