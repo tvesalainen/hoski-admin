@@ -41,8 +41,8 @@ public final class ServerProperties extends DataObject
 
     static
     {
-        Model.property(Server);
-        Model.property(Username);
+        Model.property(Server, String.class, false, true);
+        Model.property(Username, String.class, false, true);
         Model.property(Tables);
         Model.property(SuperUser, String.class);
         Model.property(SupportsZonerSMS, String.class);
