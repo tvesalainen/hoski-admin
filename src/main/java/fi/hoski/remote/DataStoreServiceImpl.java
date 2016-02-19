@@ -835,4 +835,10 @@ public class DataStoreServiceImpl implements DataStoreService
         return races.isRaceAdmin(email);
     }
 
+    @Override
+    public DataObject getParent(Key key, String kind) throws EntityNotFoundException
+    {
+        return entities.getParent(key, kind);
+    }
+
 }
