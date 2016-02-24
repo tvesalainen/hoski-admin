@@ -3719,7 +3719,7 @@ public class Admin extends WindowAdapter
             ServerProperties sp = new ServerProperties(properties);
             DataObjectDialog<ServerProperties> dod = new DataObjectDialog<>(
                     null, 
-                    sp.getModel().hide(ServerProperties.Tables, ServerProperties.SupportsZonerSMS, ServerProperties.SuperUser), 
+                    sp.getModel().hide(ServerProperties.Username, ServerProperties.Tables, ServerProperties.SupportsZonerSMS, ServerProperties.SuperUser), 
                     sp);
             if (dod.edit())
             {
