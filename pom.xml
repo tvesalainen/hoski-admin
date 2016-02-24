@@ -3,17 +3,17 @@
     <parent>
         <groupId>fi.hoski</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.7</version>
+        <version>1.0.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>fi.hoski</groupId>
     <artifactId>hoski-admin</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
     <packaging>jar</packaging>
 
     <name>Hoski Admin</name>
     <description>
-        Hoski Admin is a java application in remote connection Google App Engine.
+        Hoski Admin is a java application in remote connection to Google App Engine.
         Application is used for sailing clubs back office work.
     </description>
 
