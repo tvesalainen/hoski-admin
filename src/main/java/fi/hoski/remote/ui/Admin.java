@@ -22,6 +22,7 @@ import fi.hoski.sailwave.Competitor;
 import fi.hoski.sailwave.Race;
 import fi.hoski.sailwave.SailWaveFile;
 import com.google.appengine.api.datastore.Blob;
+import com.google.appengine.api.datastore.Entity;
 import fi.hoski.remote.DataStoreService;
 import fi.hoski.remote.DataStoreProxy;
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -3326,28 +3327,36 @@ public class Admin extends WindowAdapter
         RaceSeries raceSeries = chooseRace();
         if (raceSeries != null)
         {
-            String event = (String) raceSeries.get(RaceSeries.EVENT);
-            if (JOptionPane.showConfirmDialog(
-                    panel,
-                    TextUtil.getText("CONFIRM DELETE")) == JOptionPane.YES_OPTION)
+            List<Entity> attachments = dss.getChilds(raceSeries.getEntity().getKey(), Attachment.KIND);
+            if (attachments.isEmpty())
             {
-                int numberOfRaceEntriesFor = dss.getNumberOfRaceEntriesFor(raceSeries);
-                if (numberOfRaceEntriesFor > 0)
+                String event = (String) raceSeries.get(RaceSeries.EVENT);
+                if (JOptionPane.showConfirmDialog(
+                        panel,
+                        TextUtil.getText("CONFIRM DELETE")) == JOptionPane.YES_OPTION)
                 {
-                    if (JOptionPane.showConfirmDialog(
-                            panel,
-                            TextUtil.getText("CONFIRM WHOLE RACE DELETE"),
-                            TextUtil.getText("FLEET HAS ENTRIES"),
-                            JOptionPane.WARNING_MESSAGE
-                            ) == JOptionPane.YES_OPTION)
+                    int numberOfRaceEntriesFor = dss.getNumberOfRaceEntriesFor(raceSeries);
+                    if (numberOfRaceEntriesFor > 0)
+                    {
+                        if (JOptionPane.showConfirmDialog(
+                                panel,
+                                TextUtil.getText("CONFIRM WHOLE RACE DELETE"),
+                                TextUtil.getText("FLEET HAS ENTRIES"),
+                                JOptionPane.WARNING_MESSAGE
+                                ) == JOptionPane.YES_OPTION)
+                        {
+                            dss.deleteWithChilds(raceSeries, "RaceFleet");
+                        }
+                    }
+                    else
                     {
                         dss.deleteWithChilds(raceSeries, "RaceFleet");
                     }
                 }
-                else
-                {
-                    dss.deleteWithChilds(raceSeries, "RaceFleet");
-                }
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(frame, TextUtil.getText("RACE HAS ATTACHMENTS"));
             }
         }
     }
