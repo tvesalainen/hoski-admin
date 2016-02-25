@@ -28,9 +28,6 @@ import fi.hoski.remote.DataStoreProxy;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
-import com.google.appengine.api.users.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import fi.hoski.datastore.*;
 import fi.hoski.datastore.repository.*;
 import fi.hoski.datastore.repository.Attachment.Type;
@@ -188,10 +185,7 @@ public class Admin extends WindowAdapter
         {
             fileMenu.add(menuItemSync());
         }
-        if (privileged)
-        {
-            fileMenu.add(menuItemTextMaintenence());
-        }
+        fileMenu.add(menuItemTextMaintenence());
         if (privileged)
         {
             fileMenu.add(menuItemTextUpload());
