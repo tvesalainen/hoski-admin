@@ -28,6 +28,9 @@ import fi.hoski.remote.DataStoreProxy;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Link;
 import com.google.appengine.api.datastore.Text;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import fi.hoski.datastore.*;
 import fi.hoski.datastore.repository.*;
 import fi.hoski.datastore.repository.Attachment.Type;
@@ -103,13 +106,12 @@ public class Admin extends WindowAdapter
     private String safeTitle;
     
     private WorkBench workBench;
-    private boolean isRaceAdmin;
 
     public Admin(ServerProperties serverProperties) throws EntityNotFoundException, IOException, SMSException
     {
         this.serverProperties = serverProperties;
         server = serverProperties.getServer();
-        creator = serverProperties.getUsername();
+        creator = "hoski-admin";
         UIManager.getDefaults().addResourceBundle("fi.hoski.remote.ui.ui");
         creators = new EventEditor[EventType.values().length];
         int index = 0;
@@ -127,16 +129,6 @@ public class Admin extends WindowAdapter
             }
         }
         privileged = serverProperties.isSuperUser();
-        String email;
-        if (creator.endsWith("@gmail.com"))
-        {
-            email = creator;
-        }
-        else
-        {
-            email = creator+"@gmail.com";
-        }
-        isRaceAdmin = dss.isRaceAdmin(email);
         try
         {
             checkJavaVersion(serverProperties.getProperties());
@@ -196,7 +188,7 @@ public class Admin extends WindowAdapter
         {
             fileMenu.add(menuItemSync());
         }
-        if (privileged || isRaceAdmin)
+        if (privileged)
         {
             fileMenu.add(menuItemTextMaintenence());
         }
@@ -257,22 +249,16 @@ public class Admin extends WindowAdapter
         JMenu raceMenu = new JMenu();
         TextUtil.populate(raceMenu, "RACES");
         menuBar.add(raceMenu);
-        if (isRaceAdmin)
-        {
-            raceMenu.add(menuItemUploadRaceSeries());
-            raceMenu.add(menuItemEditRaceSeries());
-            raceMenu.add(menuItemRemoveRaceSeries());
-        }
+        raceMenu.add(menuItemUploadRaceSeries());
+        raceMenu.add(menuItemEditRaceSeries());
+        raceMenu.add(menuItemRemoveRaceSeries());
         raceMenu.add(menuItemDownloadCompetitorsForSailwave());
         raceMenu.add(menuItemInsertCompetitorsToSailwave());
         raceMenu.add(menuItemDownloadCompetitorsAsCSV());
         raceMenu.addSeparator();
-        if (isRaceAdmin)
-        {
-            raceMenu.add(menuItemUploadRanking());
-            raceMenu.add(menuItemEditRanking());
-            raceMenu.add(menuItemRemoveRanking());
-        }
+        raceMenu.add(menuItemUploadRanking());
+        raceMenu.add(menuItemEditRanking());
+        raceMenu.add(menuItemRemoveRanking());
         raceMenu.addSeparator();
         raceMenu.add(menuItemRaceEmail());
         if (serverProperties.isZonerSMSSupported())
@@ -3728,7 +3714,7 @@ public class Admin extends WindowAdapter
             ServerProperties sp = new ServerProperties(properties);
             DataObjectDialog<ServerProperties> dod = new DataObjectDialog<>(
                     null, 
-                    sp.getModel().hide(ServerProperties.Username, ServerProperties.Tables, ServerProperties.SupportsZonerSMS, ServerProperties.SuperUser), 
+                    sp.getModel().hide(ServerProperties.Tables, ServerProperties.SupportsZonerSMS, ServerProperties.SuperUser), 
                     sp);
             if (dod.edit())
             {

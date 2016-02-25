@@ -32,7 +32,6 @@ public final class ServerProperties extends DataObject
     public static final String Kind = "ServerCredentials";
     
     public static final String Server = "remoteserver";
-    public static final String Username = "remoteuser";
     public static final String Tables = "tables";
     public static final String SuperUser = "super-user";
     public static final String SupportsZonerSMS = "supports-zoner-sms";
@@ -42,7 +41,6 @@ public final class ServerProperties extends DataObject
     static
     {
         Model.property(Server, String.class, false, true);
-        Model.property(Username, String.class, false, true);
         Model.property(Tables);
         Model.property(SuperUser, String.class);
         Model.property(SupportsZonerSMS, String.class);
@@ -56,12 +54,6 @@ public final class ServerProperties extends DataObject
         {
             server = LastInput.get(Server);
             setServer(server);
-        }
-        String username = getUsername();
-        if (username == null || username.isEmpty())
-        {
-            username = LastInput.get(Username);
-            setUsername(username);
         }
     }
 
@@ -95,22 +87,11 @@ public final class ServerProperties extends DataObject
         switch (property)
         {
             case Server:
-            case Username:
                 LastInput.set(property, (String) value);
                 break;
         }
     }
     
-    public String getUsername()
-    {
-        return (String) get(Username);
-    }
-
-    public void setUsername(String username)
-    {
-        set(Username, username);
-    }
-
     public String getServer()
     {
         return (String) get(Server);
