@@ -32,6 +32,27 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
+ * This class resolves properties file settings for one db-table.
+ * <p>
+ * Properties file content explained:
+ * <p>
+ * tables=tablename1,tablename2,... # comma separated list of db-table names.
+ * <p>
+ * synchronize=tablename1,tablename2    # comma separated list of tables being
+ * remote master.
+ * <p>
+ * key-tablename = column-name  # primary key column
+ * <p>
+ * indexes-tablename = column-name  # indexing column
+ * <p>
+ * foreign-tablename = columnname1->Foreigntable1,columnname2->Foreigntable2  
+ * #comma separated list of foreign key definitions. 
+ * <p>
+ * exclude-tablename = column-name1,column-name2,...  # comma separated list of 
+ * columns that are excluded in synchronization.
+ * <p>
+ * changeCase-tablename = column-name1,column-name2,...  # comma separated list 
+ * of columns whose contents are camel-cased during synchronization.
  * @author Timo Vesalainen
  */
 public class SyncTarget
