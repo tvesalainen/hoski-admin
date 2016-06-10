@@ -539,7 +539,7 @@ public class DataStoreServiceImpl implements DataStoreService
     }
 
     @Override
-    public boolean swapShift(Map<String, Object> user, String shift, String... excl) throws EntityNotFoundException, IOException, SMSException, AddressException
+    public boolean swapShift(Map<String, Object> user, String shift, String... excl) throws EntityNotFoundException, IOException, SMSException, AddressException, TooLateException
     {
         return patrolShifts.swapShift(user, shift, excl);
     }
