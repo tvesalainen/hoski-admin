@@ -45,7 +45,7 @@ import java.util.Set;
  * <p>
  * indexes-tablename = column-name  # indexing column
  * <p>
- * foreign-tablename = columnname1->Foreigntable1,columnname2->Foreigntable2  
+ * foreign-tablename = columnname1-Foreigntable1,columnname2-Foreigntable2  
  * #comma separated list of foreign key definitions. 
  * <p>
  * exclude-tablename = column-name1,column-name2,...  # comma separated list of 
